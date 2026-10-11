@@ -11,13 +11,7 @@ For this change, merging its pull request is the push to `main` that publishes t
 3. After a push to `main`, open the published `https://kayis-rahman.github.io/ironveil-site/` URL. Check Home, How to Play, Demo & Media, Release, Privacy, Support and 404; test AVIF/WebP images, navigation, reduced motion, desktop/mobile layout, `robots.txt` and `sitemap.xml`.
 4. Track unresolved owner details and factual placeholders in `TODO-OWNER.md`; they do not gate deployment.
 
-## Local validation and preview
-
-```sh
-npm ci
-npm test
-python3 -m http.server 8000 --directory dist
-```
+For local build and preview commands, see [README.md](../README.md).
 
 The build can be configured with `SITE_URL` when the final public location changes. Internal URLs remain relative; the sitemap, robots sitemap pointer and Open Graph share image use the configured public URL.
 

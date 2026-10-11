@@ -1,6 +1,6 @@
 # Owner tasks for site facts and launch follow-up
 
-The site may publish with the clearly marked placeholders below. Replace each placeholder only after the owner supplies and verifies the corresponding information. The GitHub Pages workflow deploys automatically when changes reach `main` and Pages is configured to use GitHub Actions.
+The site may publish with the clearly marked placeholders below. Replace each placeholder only after the owner supplies and verifies the corresponding information. See [docs/deploy.md](docs/deploy.md) for GitHub Pages setup and publishing behavior.
 
 - [ ] Provide the public display/studio name and legal developer/controller name for the footer and privacy policy.
 - [ ] Provide a monitored support/privacy email and a realistic support response expectation.
@@ -18,5 +18,5 @@ The site may publish with the clearly marked placeholders below. Replace each pl
 - [ ] Add verified TestFlight/App Store URLs, release version/date, requirements and notes only when actual public builds and listings exist.
 - [ ] If an optional video is proposed after clearance, review its captions/description needs, privacy behavior, accessibility, download cost and user-initiated playback. Do not add it to the current public build.
 - [ ] Review copyright, licenses, product name/trademark, final imagery, privacy/support copy and site screenshots.
-- [ ] Configure GitHub Pages to use **GitHub Actions**. The workflow deploys automatically on pushes to `main`; intentional placeholders do not block deployment.
+- [ ] Configure GitHub Pages to use **GitHub Actions**.
 - [ ] Decide whether to buy a domain only when ready. Configure DNS and GitHub Pages before adding a `CNAME`; update `SITE_URL`, sitemap/robots and social metadata, then recheck HTTPS and redirects.

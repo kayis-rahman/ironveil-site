@@ -14,8 +14,8 @@ python3 -m http.server 8000 --directory dist
 
 Open `http://localhost:8000`. The build strips image metadata and checks responsive variants, local links, page/image/media budgets, and sitemap/robots output. Build inputs remain at the repository root; only `dist/` is deployed. See [TODO-OWNER.md](TODO-OWNER.md) for pending owner facts and [docs/deploy.md](docs/deploy.md) for Pages setup.
 
-## Production output
+## Publishing
 
-The `Build and deploy Ironveil Pages` workflow validates pull requests and deploys automatically on pushes to `main` once Pages uses GitHub Actions. This change is published by merging its pull request to `main`, which requires the captain’s explicit authorization. The site can publish with the visible owner placeholders in place; those facts are tracked in `TODO-OWNER.md`. The site uses relative internal URLs so the repo subpath and a later custom domain work without a build-time base-path rewrite.
+See [docs/deploy.md](docs/deploy.md) for GitHub Pages setup, publishing behavior and deployment prerequisites. Pending owner facts are tracked in [TODO-OWNER.md](TODO-OWNER.md). Internal links are relative, so the site works from the repository subpath and a later custom domain without a build-time base-path rewrite.
 
 The site intentionally states that no playable browser demo or store release is available. The Demo & Media page contains only actual early-build gameplay captures; storyboard art and the motion study remain review-only and are excluded from production.
