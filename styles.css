@@ -39,7 +39,9 @@ picture { display: block; }
 main { min-height: 65vh; }
 
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: min(860px, 100svh); display: grid; place-items: center; text-align: center; background: var(--night); }
-.hero-art { position: absolute; z-index: -2; inset: 0; overflow: hidden; background-color: var(--plum-deep); background-image: linear-gradient(180deg, #11152230 0%, #1115221c 39%, #111522d9 100%), radial-gradient(ellipse at 76% 69%, var(--gold) 0 1.7%, transparent 2.2%), linear-gradient(145deg, transparent 46%, #e7e8e426 46.3% 61%, transparent 61.3%), linear-gradient(35deg, transparent 53%, #eac26c38 53.3% 62%, transparent 62.3%), linear-gradient(145deg, #777287 0%, #4b405c 42%, #211c2d 100%); }
+.hero-art { position: absolute; z-index: -2; inset: 0; overflow: hidden; background: var(--plum-deep); }
+.hero-art img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 58% 42%; filter: saturate(.82) brightness(.68); transform: scale(1.025); }
+.hero-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #111522cc 0%, #1115227a 43%, #11152224 76%, #11152266 100%), linear-gradient(0deg, #111522f0 0%, #11152220 40%, #11152280 100%), radial-gradient(ellipse at 74% 38%, #eac26c30 0%, transparent 42%); }
 .hero-shade { position: absolute; z-index: -1; inset: 0; background: radial-gradient(ellipse at 50% 42%, transparent 0%, #11152238 54%, #111522c2 100%), linear-gradient(0deg, var(--night) 0%, transparent 25%, #11152240 100%); }
 .hero-content { width: min(1000px, 100%); margin: auto; padding: 160px clamp(20px, 5vw, 56px) 112px; }
 .eyebrow, .label { margin: 0 0 12px; color: var(--gold); font-size: .74rem; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
@@ -143,6 +145,14 @@ main { min-height: 65vh; }
 .reveal { opacity: 1; transform: none; }
 .motion-ready .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
 .motion-ready .reveal.in-view { opacity: 1; transform: none; }
+
+@keyframes hero-drift {
+  to { transform: scale(1.085) translate3d(-.5%, -1%, 0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-art img { animation: hero-drift 32s ease-in-out infinite alternate; }
+}
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .hero-art { transition: filter 1s ease; }

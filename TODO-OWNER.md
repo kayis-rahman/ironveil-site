@@ -4,13 +4,13 @@ The site may publish with the clearly marked placeholders below. Replace each pl
 
 - [ ] Provide the public display/studio name and legal developer/controller name for the footer and privacy policy.
 - [ ] Provide a monitored support/privacy email and a realistic support response expectation.
-- [ ] Confirm the privacy-policy controller, effective date, account, data-practice and hosting claims against the final build and applicable law.
+- [ ] Confirm the privacy-policy controller, effective date and hosting claims against the final build and applicable law. Game privacy and support statements remain placeholders until verified against the game code.
 - [ ] Decide whether EU trader disclosure applies. If it does, provide the legally required address, registration, VAT or other details and authorize publication.
 - [ ] Confirm supported platforms, devices and OS requirements; the Release page currently marks these as a placeholder.
 - [ ] Confirm whether the game has advertising or in-game purchases; Privacy and Support currently mark these as placeholders.
 - [ ] Confirm the release turn window; How to Play deliberately gives no specific duration.
 - [ ] Confirm product wording and that the game remains offline against a bot as described.
-- [ ] Confirm that the accepted Freya identity/favicon and existing gameplay captures are cleared for this public site. Existing captures are early-build media, not final store screenshots.
+- [x] The captain approved the Freya favicon artwork and all five gameplay captures in `assets/source/gameplay/` for the public site on 2026-10-11 with “GO ahead and create workflow then deploy as well” and the direction to rework the hero with Ironveil art. The captain may withdraw approval for any of these assets before the pull request is merged. Existing captures are early-build media, not final store screenshots.
 - [ ] Do not publish storyboard stills or the three-second motion study; they remain review-only. If any non-gameplay art or video is proposed later, obtain explicit rights-holder approval before adding it to the site.
 - [ ] Add verified TestFlight/App Store URLs, release version/date, requirements and notes only when actual public builds and listings exist.
 - [ ] If an optional video is proposed after clearance, review its captions/description needs, privacy behavior, accessibility, download cost and user-initiated playback. Do not add it to the current public build.
