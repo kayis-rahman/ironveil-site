@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kayis-rahman.github.io/ironveil-site/sitemap.xml
