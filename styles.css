@@ -57,6 +57,7 @@ main { min-height: 65vh; }
 .scroll-cue:hover { transform: translate(-50%, -3px); border-color: var(--gold); }
 
 .section { padding-block: clamp(64px, 9vw, 112px); }
+.not-found { padding-top: 132px; }
 .section-story { background: var(--night); }
 .section-heading { max-width: 800px; margin: 0 auto 38px; text-align: center; }
 .section-heading h2, .gods-heading h2, .island-heading h2, .media-callout h2, .release-panel h2, .page-title { margin: 8px 0 16px; font: 700 clamp(2.45rem, 5.8vw, 5.1rem)/.98 var(--serif); letter-spacing: -.04em; text-wrap: balance; }
@@ -172,6 +173,7 @@ main { min-height: 65vh; }
   .media-callout { grid-template-columns: 1fr; gap: 20px; padding: 19px; }
   .release-panel { align-items: flex-start; flex-direction: column; }
   .page-hero { padding: 145px 0 54px; }
+  .not-found { padding-top: 150px; }
   .page-title { font-size: clamp(3.1rem, 12vw, 4.8rem); }
   .footer-inner { align-items: flex-start; flex-direction: column; padding-block: 22px; }
   .footer-inner nav { gap: 14px; }
