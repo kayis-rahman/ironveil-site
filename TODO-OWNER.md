@@ -5,7 +5,7 @@ The site can publish with the clearly identified legal/contact/trader placeholde
 ## Captain-owned
 
 - [ ] Supply the operator's legal name for the footer and Privacy page.
-- [ ] Supply and test a monitored privacy/support email address. Until the captain confirms that it works, Support uses GitHub Issues and no email at `ironvei-game.online` is published.
+- [ ] Supply and test a monitored privacy contact address. General product support uses GitHub Issues; the Support page's published alpha-access email is for access requests and is not documented as a monitored privacy contact.
 - [ ] Self-assess EU trader status and authorize any legally required trader details before publication.
 - [ ] Review and approve the draft Privacy page before publication; update it if the live service or data practices change.
 

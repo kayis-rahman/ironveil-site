@@ -30,7 +30,7 @@ At Namecheap, the setup will require:
 
 After DNS propagation, firstmate will set **Settings → Pages → Custom domain** to `ironvei-game.online`, verify GitHub's DNS checks, and enable HTTPS when GitHub makes it available. Then verify the apex and `www` behavior, canonical tags, Open Graph URLs, `robots.txt`, `sitemap.xml`, and the CNAME artifact. Do not configure DNS, the Pages custom-domain setting, or HTTPS as part of this site change.
 
-Support remains on [GitHub Issues](https://github.com/kayis-rahman/ironveil/issues) until the captain confirms that a support email address works. No email at the new domain is published or configured.
+The Support page is the source for current contact links: GitHub Issues handles general support and bug reports, and its alpha section has a separate request-access email link. The alpha address is not documented as a confirmed monitored privacy or general-support contact.
 
 ## Workflow behavior
 
