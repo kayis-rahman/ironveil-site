@@ -138,8 +138,12 @@ class PageParser(html.parser.HTMLParser):
                 self.picture_costs.append([(url, width) for url, width in candidates if width == highest_width])
 
 
+def anchor_hrefs(parser: PageParser) -> list[str]:
+    return [url for url, kind in parser.links if kind == "link"]
+
+
 def check_alpha_links(parser: PageParser) -> None:
-    anchors = [url for url, kind in parser.links if kind == "link"]
+    anchors = anchor_hrefs(parser)
     email_targets = {
         urlsplit(url).path.lower()
         for url in anchors
@@ -156,6 +160,11 @@ def check_alpha_links(parser: PageParser) -> None:
         host = (urlsplit(url).hostname or "").lower().rstrip(".")
         if host == "testflight.apple.com" or host.endswith(".testflight.apple.com"):
             error(f"Support page must not link to public TestFlight: {url}")
+
+
+def check_home_alpha_link(parser: PageParser) -> None:
+    if "support/#alpha" not in anchor_hrefs(parser):
+        error("Home page is missing a link to the alpha access section")
 
 
 def resolve_local(page: Path, url: str) -> tuple[Path | None, str]:
@@ -293,8 +302,10 @@ def main() -> int:
     support_parser.feed(support_html)
     support_parser.close()
     check_alpha_links(support_parser)
-    if "support/#alpha" not in (DIST / "index.html").read_text(encoding="utf-8"):
-        error("Home page is missing a link to the alpha access section")
+    home_parser = PageParser()
+    home_parser.feed((DIST / "index.html").read_text(encoding="utf-8"))
+    home_parser.close()
+    check_home_alpha_link(home_parser)
 
     if all_video_bytes > MEDIA_BUDGET:
         error(f"Total embedded media is {all_video_bytes / 1024:.0f} KiB, over {MEDIA_BUDGET / 1024:.0f} KiB")
