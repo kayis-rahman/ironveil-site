@@ -1,0 +1,5 @@
+# Generated site output and local Node dependencies
+dist/
+node_modules/
+.lavish/
+.DS_Store
