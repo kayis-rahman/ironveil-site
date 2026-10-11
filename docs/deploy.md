@@ -2,6 +2,8 @@
 
 This repository builds its static site into `dist/`. The pinned GitHub Actions workflow validates pull requests and deploys `dist/` automatically on pushes to `main`, once GitHub Pages is configured to use **GitHub Actions**. The site may publish with the clearly marked owner placeholders; the owner can replace them when verified details are available.
 
+For this change, merging its pull request is the push to `main` that publishes the site, and requires the captain’s explicit authorization. This workflow does not merge the pull request.
+
 ## Setup and verification
 
 1. In **Settings → Pages**, set the source to **GitHub Actions**. Do not select a branch-folder publishing source.
