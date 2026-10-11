@@ -8,7 +8,7 @@ import { minify as minifyJs } from 'terser';
 
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
-const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://kayis-rahman.github.io/ironveil-site/');
+const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
 const WIDTHS = [360, 640, 960, 1280, 1600];
 const IMAGE_BUDGET = 500 * 1024;
 
@@ -224,6 +224,9 @@ async function buildDiscoveryFiles() {
   const robots = `User-agent: *\nAllow: /\nSitemap: ${new URL('sitemap.xml', SITE_URL).href}\n`;
   await writeFile(path.join(DIST, 'sitemap.xml'), sitemap);
   await writeFile(path.join(DIST, 'robots.txt'), robots);
+  const customDomain = (await readFile(path.join(ROOT, 'CNAME'), 'utf8')).trim();
+  if (customDomain !== 'ironvei-game.online') throw new Error('CNAME must contain ironvei-game.online');
+  await writeFile(path.join(DIST, 'CNAME'), `${customDomain}\n`);
   await writeFile(path.join(DIST, '.nojekyll'), '');
 }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>@@SITE_URL@@</loc></url>
-  <url><loc>@@SITE_URL@@how-to-play/</loc></url>
-  <url><loc>@@SITE_URL@@release/</loc></url>
-  <url><loc>@@SITE_URL@@demo/</loc></url>
-  <url><loc>@@SITE_URL@@privacy/</loc></url>
-  <url><loc>@@SITE_URL@@support/</loc></url>
+  <url><loc>https://ironvei-game.online/</loc></url>
+  <url><loc>https://ironvei-game.online/how-to-play/</loc></url>
+  <url><loc>https://ironvei-game.online/release/</loc></url>
+  <url><loc>https://ironvei-game.online/demo/</loc></url>
+  <url><loc>https://ironvei-game.online/privacy/</loc></url>
+  <url><loc>https://ironvei-game.online/support/</loc></url>
 </urlset>

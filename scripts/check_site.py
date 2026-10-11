@@ -25,7 +25,7 @@ PAGE_BUDGET = 800 * 1024
 IMAGE_BUDGET = 500 * 1024
 MEDIA_BUDGET = 750 * 1024
 SITE_BUDGET = 3 * 1024 * 1024
-SITE_URL = os.environ.get("SITE_URL", "https://kayis-rahman.github.io/ironveil-site/")
+SITE_URL = os.environ.get("SITE_URL", "https://ironvei-game.online/")
 if not SITE_URL.endswith("/"):
     SITE_URL += "/"
 ERRORS: list[str] = []
@@ -243,6 +243,10 @@ def main() -> int:
         for asset in (DIST / rel).glob("*"):
             if not re.search(r"-[0-9a-f]{12}\.", asset.name):
                 error(f"Built asset is not content-hashed: {asset.relative_to(DIST)}")
+
+    cname = (DIST / "CNAME").read_text(encoding="utf-8").strip()
+    if cname != "ironvei-game.online":
+        error("CNAME must contain ironvei-game.online")
 
     robots = (DIST / "robots.txt").read_text(encoding="utf-8")
     if f"Sitemap: {SITE_URL}sitemap.xml" not in robots:
