@@ -1,9 +1,21 @@
 # Ironveil website
 
-A small, static, mobile-first site for GitHub Pages. No build step, framework, external fonts, trackers or runtime JavaScript.
+A responsive, static site for GitHub Pages. Source pages are plain HTML and CSS with one small progressive-enhancement script; `npm run build` produces minified HTML/CSS/JS, content-hashed assets, and responsive AVIF/WebP image sets in `dist/`. The build uses a pinned Node version and lockfile. No runtime framework, external fonts, trackers, CDNs or third-party video embed are used.
 
-## Preview and checks
+## Build and check locally
 
-From the repository root, run `python3 -m http.server 8000` and open `http://localhost:8000`. Run the local quality checks with `python3 scripts/check_site.py` (requires Python 3 and macOS `tidy`/`sips`). See [docs/deploy.md](docs/deploy.md) for owner-only publishing steps and [TODO-OWNER.md](TODO-OWNER.md) for launch details still to supply.
+Requirements: Node `22.16.0` (see `.nvmrc`) and Python 3.
 
-The site intentionally has no store links or playable browser demo yet. The game is offline; Godot 4 C# cannot export to web. Do not publish until owner placeholders and policy are reviewed.
+```sh
+npm ci
+npm test
+python3 -m http.server 8000 --directory dist
+```
+
+Open `http://localhost:8000`. The build strips image metadata and checks responsive variants, local links, page/image/media budgets, and sitemap/robots output. Build inputs remain at the repository root; only `dist/` is deployed. See [TODO-OWNER.md](TODO-OWNER.md) before any public launch and [docs/deploy.md](docs/deploy.md) for the gated publishing steps.
+
+## Production output
+
+The `Build and deploy Ironveil Pages` workflow validates pull requests without deploying them. A push to `main` builds and uploads `dist/`; deployment is additionally gated by the repository variable `PAGES_DEPLOY_ENABLED=true`. Keep the variable unset and Pages disabled until the pull request is merged and the owner has supplied all launch details. Owner-only configuration remains an explicit prerequisite. The site uses relative internal URLs so the repo subpath and a later custom domain work without a build-time base-path rewrite.
+
+The site intentionally states that no playable browser demo or store release is available. The Demo & Media page contains only actual early-build gameplay captures; storyboard art and the motion study remain review-only and are excluded from production.

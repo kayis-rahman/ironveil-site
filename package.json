@@ -1,0 +1,20 @@
+{
+  "name": "ironveil-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build and validate the lightweight static Ironveil website.",
+  "engines": {
+    "node": "22.16.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "python3 scripts/check_site.py",
+    "test": "npm run build && npm run check"
+  },
+  "devDependencies": {
+    "clean-css": "5.3.3",
+    "html-minifier-terser": "7.2.0",
+    "sharp": "0.35.5",
+    "terser": "5.43.1"
+  }
+}
