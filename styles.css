@@ -40,8 +40,6 @@ main { min-height: 65vh; }
 
 .hero { position: relative; isolation: isolate; overflow: hidden; min-height: min(860px, 100svh); display: grid; place-items: center; background: var(--night); }
 .hero-art { position: absolute; z-index: 0; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 74% 38%, #eac26c42 0%, transparent 40%), radial-gradient(ellipse at 42% 70%, #456278 0%, transparent 56%), linear-gradient(145deg, #182133 0%, #30243c 54%, #111522 100%); }
-.hero-figure { position: absolute; z-index: 1; right: clamp(0px, calc((100vw - 1200px) / 2), 130px); bottom: clamp(42px, 7vh, 84px); width: min(40vw, 540px); height: min(76vh, 740px); filter: drop-shadow(0 30px 80px #0009) saturate(.84); }
-.hero-figure img { width: 100%; height: 100%; max-width: none; object-fit: contain; object-position: center bottom; }
 .hero-shade { position: absolute; z-index: 2; inset: 0; background: linear-gradient(90deg, #111522ed 0%, #111522c7 40%, #1115224d 68%, #11152225 100%), linear-gradient(0deg, var(--night) 0%, transparent 27%, #11152270 100%); }
 .hero-content { position: relative; z-index: 3; width: min(1320px, 100%); margin: auto; padding: 160px clamp(20px, 5vw, 56px) 112px; text-align: left; }
 .eyebrow, .label { margin: 0 0 12px; color: var(--gold); font-size: .74rem; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
@@ -149,15 +147,6 @@ main { min-height: 65vh; }
 .motion-ready .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
 .motion-ready .reveal.in-view { opacity: 1; transform: none; }
 
-@keyframes hero-drift {
-  from { transform: rotate(2deg) scale(1.01); }
-  to { transform: rotate(0) scale(1.055) translate3d(-.5%, -1%, 0); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero-figure img { animation: hero-drift 36s ease-in-out infinite alternate; }
-}
-
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .hero-art { transition: filter 1s ease; }
   .hero:hover .hero-art { filter: saturate(1.12); }
@@ -169,7 +158,6 @@ main { min-height: 65vh; }
   .nav { justify-content: flex-start; gap: 8px 17px; font-size: .77rem; }
   .hero { min-height: 86svh; }
   .hero-art { background-position: center; }
-  .hero-figure { right: -12vw; bottom: 5vh; width: min(76vw, 420px); height: 58vh; opacity: .55; }
   .hero-shade { background: linear-gradient(90deg, #111522ee 0%, #111522c9 58%, #11152280 100%), linear-gradient(0deg, var(--night) 0%, transparent 38%, #11152270 100%); }
   .hero-content { padding: 205px 22px 105px; }
   .hero h1 { font-size: clamp(3.4rem, 13vw, 5.4rem); }
