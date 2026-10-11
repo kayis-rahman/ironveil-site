@@ -138,6 +138,26 @@ class PageParser(html.parser.HTMLParser):
                 self.picture_costs.append([(url, width) for url, width in candidates if width == highest_width])
 
 
+def check_alpha_links(parser: PageParser) -> None:
+    anchors = [url for url, kind in parser.links if kind == "link"]
+    email_targets = {
+        urlsplit(url).path.lower()
+        for url in anchors
+        if urlsplit(url).scheme.lower() == "mailto"
+    }
+    if "support@ironvei-game.online" not in email_targets:
+        error("Support page is missing the request-access email link")
+
+    apple_help = "https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/"
+    if apple_help not in anchors:
+        error("Support page is missing the official Apple internal-tester help link")
+
+    for url in anchors:
+        host = (urlsplit(url).hostname or "").lower().rstrip(".")
+        if host == "testflight.apple.com" or host.endswith(".testflight.apple.com"):
+            error(f"Support page must not link to public TestFlight: {url}")
+
+
 def resolve_local(page: Path, url: str) -> tuple[Path | None, str]:
     parsed = urlsplit(url)
     if parsed.scheme or parsed.netloc or url.startswith("//"):
@@ -262,16 +282,17 @@ def main() -> int:
     support_html = (DIST / "support/index.html").read_text(encoding="utf-8")
     alpha_requirements = {
         "Join the Ironveil Alpha": "alpha section heading",
-        "mailto:support@ironvei-game.online": "request-access email link",
         "invite-only": "invite-only status",
         "App Store Connect": "internal tester process",
         "Apple TestFlight invitation": "invitation delivery explanation",
-        "https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/": "official Apple internal-tester help link",
-        "no public TestFlight link": "absence of a public TestFlight link",
     }
     for expected, label in alpha_requirements.items():
         if expected.lower() not in support_html.lower():
             error(f"Support page is missing alpha CTA {label}")
+    support_parser = PageParser()
+    support_parser.feed(support_html)
+    support_parser.close()
+    check_alpha_links(support_parser)
     if "support/#alpha" not in (DIST / "index.html").read_text(encoding="utf-8"):
         error("Home page is missing a link to the alpha access section")
 
