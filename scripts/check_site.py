@@ -259,6 +259,22 @@ def main() -> int:
     except (ET.ParseError, OSError) as exc:
         error(f"Invalid sitemap.xml: {exc}")
 
+    support_html = (DIST / "support/index.html").read_text(encoding="utf-8")
+    alpha_requirements = {
+        "Join the Ironveil Alpha": "alpha section heading",
+        "mailto:support@ironvei-game.online": "request-access email link",
+        "invite-only": "invite-only status",
+        "App Store Connect": "internal tester process",
+        "Apple TestFlight invitation": "invitation delivery explanation",
+        "https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/": "official Apple internal-tester help link",
+        "no public TestFlight link": "absence of a public TestFlight link",
+    }
+    for expected, label in alpha_requirements.items():
+        if expected.lower() not in support_html.lower():
+            error(f"Support page is missing alpha CTA {label}")
+    if "support/#alpha" not in (DIST / "index.html").read_text(encoding="utf-8"):
+        error("Home page is missing a link to the alpha access section")
+
     if all_video_bytes > MEDIA_BUDGET:
         error(f"Total embedded media is {all_video_bytes / 1024:.0f} KiB, over {MEDIA_BUDGET / 1024:.0f} KiB")
     if ERRORS:
