@@ -34,7 +34,7 @@ DNS records already in place at Namecheap:
 
 Do not configure DNS, the Pages custom-domain setting, or HTTPS as part of this site change. After an approved merge, firstmate should re-verify the apex and `www` behavior, canonical tags, Open Graph URLs, `robots.txt`, `sitemap.xml` and the CNAME artifact.
 
-The Support page is the source for current contact links: general support, bug reports and alpha-access requests all use this repository's public GitHub Issues page (`https://github.com/kayis-rahman/ironveil-site/issues`). No email address is published; the Support page keeps a marked owner slot for a support email address (the captain's decision), and the Privacy page keeps a marked owner placeholder for a private privacy contact.
+See the [Support page](../support/) for current support channels and the [Privacy page](../privacy/) for privacy-contact status.
 
 ## Workflow behavior
 
