@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#111522">
-  <meta name="description" content="Draft privacy information for Ironveil's offline game and static website.">
+  <meta name="description" content="What the Ironveil offline game stores and sends, the separate online code and Pi alpha, and this static website. Verified claims are sourced; unverified claims are marked.">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Privacy — Ironveil">
-  <meta property="og:description" content="A draft explanation of local game data, optional online code and this static website.">
+  <meta property="og:description" content="What the Ironveil offline game stores and sends, the separate online code and Pi alpha, and this static website - with unverified claims marked.">
   <meta property="og:image" content="@@OG_IMAGE_URL@@">
   <meta name="twitter:card" content="summary_large_image">
   <title>Privacy — Ironveil</title>
@@ -28,36 +28,50 @@
   <main id="main">
     <section class="page-hero">
       <div class="wrap">
-        <p class="eyebrow">Draft · for captain review</p>
+        <p class="eyebrow">Privacy · draft, fact-checked</p>
         <h1 class="page-title">Privacy, in plain language.</h1>
-        <p>This draft describes the offline game and this website. The captain must review it before publication; online service details are not verified as live.</p>
+        <p>What the offline game stores, what it sends, and what it does not. Every claim is sourced from code and audit evidence; anything that could not be verified is marked as unverified.</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap prose">
-        <p><strong>Draft prepared:</strong> 11 October 2026<br><strong>Controller / legal developer:</strong> [OWNER TO SUPPLY LEGAL NAME]</p>
-        <h2>The offline game</h2>
-        <p>The offline game can be played without an account or an internet connection. Match saves, match history and settings are stored in the game's app-specific local data area on the device. They are not cloud-synced by the offline game; deleting the app or its data can remove them.</p>
-        <p>The current offline MVP has no advertising, in-app purchases, analytics SDK or crash-reporting SDK. The source audit found no client analytics/event-upload code. The game reads a platform identifier locally when deriving an encryption key for a saved optional online session; the audit found no code sending that identifier to a service.</p>
-        <h2>Separate online code and the Pi alpha</h2>
-        <p>The repository also contains a separate, optional online account and match-service path; it is outside the approved offline MVP. In that code, sign-up and sign-in send an email address and password to the configured service. The password is not stored on the device. A signed-in session stores the player ID, email, access token and expiry in an encrypted app-sandbox file; online requests use the bearer token. This describes code, not a claim that online play is part of the current public release.</p>
-        <p>A Pi alpha deployment plan proposes persistent account and match state in PostgreSQL and a 24-hour production turn window. The supplied audit did not verify a live Pi service, its current configuration, operators, logs, backups or retention. This draft therefore makes no claim about live server operations or retention. Before any online alpha is offered, the owner must verify the actual service and publish a matching notice.</p>
+        <p><strong>Fact-checked:</strong> 18 October 2026 against the Ironveil repository (<code>docs/release/privacy-policy.md</code> at commit <code>88538c42</code>, plus the code audits mapped in the repository’s <code>docs/fact-sources.md</code>). The captain must approve this page before it is treated as final.</p>
+        <div class="placeholder">
+          <strong>Marked as unverified - read before relying on this page:</strong>
+          <ul>
+            <li><strong>Exact shipped build:</strong> claims are verified against the source commit above, not against a specific App Store or TestFlight binary.</li>
+            <li><strong>Live online service:</strong> no account or match service has been verified as running. This page does not claim that online play or the Pi alpha is live, and makes no claim about any server’s logs, backups or retention.</li>
+            <li><strong>Telemetry:</strong> the absence of analytics and crash-reporting code is verified by a source audit only. If a shipped build adds telemetry, this page must be updated before that build is released.</li>
+            <li><strong>Privacy contact:</strong> no monitored privacy email address has been confirmed yet; the owner decision is marked below.</li>
+          </ul>
+        </div>
+        <p><strong>Controller / legal developer:</strong> [OWNER TO SUPPLY LEGAL NAME]</p>
+        <h2>The offline game: single-player on your device</h2>
+        <p>Ironveil is an offline, single-player game against a bot. It can be played without an account or an internet connection, and the offline game makes no network requests: the online client in the code is a plain static class that is not loaded at startup and does not connect until an online screen explicitly asks.</p>
+        <p>Match saves, match history and settings are stored in the game’s app-specific private storage on the device. They are not cloud-synced; deleting the app or its data removes them.</p>
+        <p><strong>Data collected: none.</strong> The offline game has no sign-up, no login, no advertising, no in-app purchases, and no analytics or crash-reporting SDK. The source audit found no client analytics or event-upload code. The game reads a platform identifier locally when deriving an encryption key for a saved optional online session; the audit found no code sending that identifier to a service.</p>
+        <h2>Tracking</h2>
+        <p>The shipped source contains no tracking, advertising or analytics code, and this website sets no tracking cookies (see below). This is verified from the audited source, not from a store binary - see the unverified note above for the exact-shipped-build caveat.</p>
+        <h2>Separate online account and match code (not part of the offline game)</h2>
+        <p>The repository also contains a separate, optional online account and match-service path that sits outside the approved offline game. In that code, sign-up and sign-in send an email address and password to a configured service; the server stores the password hashed. After sign-in the password is dropped from the device: the session is stored in an encrypted app-sandbox file and holds the player ID, email, access token and expiry, and online requests authenticate with a bearer token. This describes code in the repository - it is not a claim that online play is part of the current release or that any service is reachable today.</p>
+        <h2>The Pi alpha online mode (planned, not verified live)</h2>
+        <p>A Pi alpha deployment plan proposes persistent accounts and match state in PostgreSQL with a 24-hour production turn window, and leaves alpha retention and data reset as an open decision. None of that has been verified against a running service: the audit evidence marks live server state as unverified, so this page makes no claim about whether the service is live, who operates it, or its logs, backups or retention. If an online alpha is offered, the account data described above plus server-side match state would be involved, and a separately verified privacy notice must be published first.</p>
         <h2>This website</h2>
-        <p>This is a static informational site. Its code uses no advertising trackers, analytics, contact forms or site-set cookies, and loads no third-party scripts, fonts or media. GitHub Pages hosts the site and may process visitors' IP addresses and technical request information for security and service operation. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">GitHub's privacy statement</a> for its practices.</p>
-        <p>The gameplay pages use locally hosted screenshots. If you follow a link to GitHub Issues, GitHub's own privacy practices apply; issue reports are public. Do not post passwords, private account details, payment information or other sensitive personal data there.</p>
+        <p>This is a static informational site. Its code uses no advertising trackers, analytics, contact forms or site-set cookies, and loads no third-party scripts, fonts or media. GitHub Pages hosts the site and may process visitors’ IP addresses and technical request information for security and service operation. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">GitHub’s privacy statement</a> for its practices.</p>
+        <p>The gameplay pages use locally hosted screenshots. If you follow a link to GitHub Issues, GitHub’s own privacy practices apply; issue reports are public. Do not post passwords, private account details, payment information or other sensitive personal data there.</p>
         <h2>Contact and EU trader information</h2>
         <div class="placeholder">
-          <strong>Owner details to add after review:</strong><br>
-          Privacy contact email: [OWNER TO SUPPLY A WORKING ADDRESS]<br>
+          <strong>Owner details still to add after review:</strong><br>
+          Privacy contact email: [OWNER TO SUPPLY A WORKING ADDRESS - owner decision, not yet published]<br>
           EU trader status and any legally required trader details: [OWNER TO ASSESS AND SUPPLY IF APPLICABLE]
         </div>
-        <p>For product support, use <a href="../support/">GitHub Issues</a>; do not send privacy requests or sensitive information through a public issue. A private privacy contact address must be supplied before this draft is finalized. This text is not legal advice.</p>
+        <p>For product support, use <a href="../support/">Support</a> and the public GitHub Issues channel; do not send privacy requests or sensitive information through a public issue. This text is not legal advice.</p>
       </div>
     </section>
   </main>
   <footer class="site-footer">
     <div class="wrap footer-inner">
-      <span>© <span data-placeholder="owner">[OPERATOR LEGAL NAME]</span> · Ironveil is in development.</span>
+      <span>© 2026 Kayis Rahman · Ironveil is in development.</span>
       <nav aria-label="Footer"><a href="../support/">Support</a><a href="../release/">Release</a><a href="../index.html">Home</a></nav>
     </div>
   </footer>

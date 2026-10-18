@@ -14,23 +14,27 @@ The root `CNAME` file contains `ironvei-game.online` and is copied into the Page
 
 For local preview commands, see [README.md](../README.md).
 
-## Custom-domain setup checklist — firstmate, after the approved merge
+## Observed GitHub Pages configuration - observed 2026-10-18
 
-The captain purchased **`ironvei-game.online`** at Namecheap. The exact spelling has no `l` after `v`. DNS and the GitHub Pages custom-domain setting have deliberately not been configured in this change; firstmate will handle them as a separate post-merge step.
+The captain purchased **`ironvei-game.online`** at Namecheap. The exact spelling has no `l` after `v`. The following is the observed state from the GitHub Pages API on 2026-10-18, reported for accuracy only - this site change does not alter any of it:
 
-At Namecheap, the setup will require:
+- Custom domain (CNAME): `ironvei-game.online`, configured. GitHub reports the site base as `http://ironvei-game.online/`.
+- Source: the GitHub Actions workflow (`build_type: workflow`), branch `main`, path `/`.
+- TLS certificate: approved for `ironvei-game.online` and `www.ironvei-game.online`, expiring 2027-01-09.
+- HTTPS enforcement: **not enabled** (`https_enforced=false`); HTTP currently answers. Enabling "Enforce HTTPS" is a separate settings step for firstmate/the captain after the approved merge.
+
+DNS records already in place at Namecheap:
 
 - Apex A records for `@`:
   - `185.199.108.153`
   - `185.199.109.153`
   - `185.199.110.153`
   - `185.199.111.153`
-- Optional AAAA records, if firstmate chooses to add IPv6 after checking GitHub Pages' current values.
 - A CNAME record for `www` pointing to `kayis-rahman.github.io`.
 
-After DNS propagation, firstmate will set **Settings → Pages → Custom domain** to `ironvei-game.online`, verify GitHub's DNS checks, and enable HTTPS when GitHub makes it available. Then verify the apex and `www` behavior, canonical tags, Open Graph URLs, `robots.txt`, `sitemap.xml`, and the CNAME artifact. Do not configure DNS, the Pages custom-domain setting, or HTTPS as part of this site change.
+Do not configure DNS, the Pages custom-domain setting, or HTTPS as part of this site change. After an approved merge, firstmate should re-verify the apex and `www` behavior, canonical tags, Open Graph URLs, `robots.txt`, `sitemap.xml` and the CNAME artifact.
 
-The Support page is the source for current contact links: GitHub Issues handles general support and bug reports, and its alpha section has a separate request-access email link. The alpha address is not documented as a confirmed monitored privacy or general-support contact.
+See the [Support page](../support/) for current support channels and the [Privacy page](../privacy/) for privacy-contact status.
 
 ## Workflow behavior
 
