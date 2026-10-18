@@ -6,7 +6,7 @@ The site can publish with the clearly identified legal/contact/trader placeholde
 
 - [x] Footer copyright confirmed as “© 2026 Kayis Rahman” (captain, relayed by firstmate on 2026-10-18); applied to all page footers. The App Store copyright field is for the listing update, not this site.
 - [ ] Supply the legal name for the Privacy page's “Controller / legal developer” line.
-- [ ] Supply and test a monitored privacy contact address. General product support, bug reports and alpha-access requests use this repository's public GitHub Issues; the Support page keeps a marked, unpublished email slot for a support address - supplying one is the captain's decision.
+- [ ] Supply and test a monitored privacy contact address. General product support, bug reports and alpha-access requests use this repository's public GitHub Issues.
 - [ ] Self-assess EU trader status and authorize any legally required trader details before publication.
 - [ ] Approve the fact-checked Privacy page before publication; update it if the live service or data practices change.
 
