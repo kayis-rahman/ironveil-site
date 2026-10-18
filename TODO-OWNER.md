@@ -1,13 +1,14 @@
 # Owner tasks for launch details
 
-The site can publish with the clearly identified legal/contact/trader placeholders below. Game and website claims are sourced in [docs/fact-sources.md](docs/fact-sources.md); the Privacy page is a draft and needs the captain's review before publication.
+The site can publish with the clearly identified legal/contact/trader placeholders below. Game and website claims are sourced in [docs/fact-sources.md](docs/fact-sources.md); the Privacy page was fact-checked against those sources on 2026-10-18 and still needs the captain's approval before publication.
 
 ## Captain-owned
 
-- [ ] Supply the operator's legal name for the footer and Privacy page.
-- [ ] Supply and test a monitored privacy contact address. General product support uses GitHub Issues; the Support page's published alpha-access email is for access requests and is not documented as a monitored privacy contact.
+- [x] Footer copyright confirmed as “© 2026 Kayis Rahman” (captain, relayed by firstmate on 2026-10-18); applied to all page footers. The App Store copyright field is for the listing update, not this site.
+- [ ] Supply the legal name for the Privacy page's “Controller / legal developer” line.
+- [ ] Supply and test a monitored privacy contact address. General product support, bug reports and alpha-access requests use this repository's public GitHub Issues; the Support page keeps a marked, unpublished email slot for a support address - supplying one is the captain's decision.
 - [ ] Self-assess EU trader status and authorize any legally required trader details before publication.
-- [ ] Review and approve the draft Privacy page before publication; update it if the live service or data practices change.
+- [ ] Approve the fact-checked Privacy page before publication; update it if the live service or data practices change.
 
 ## Art approval
 
@@ -18,4 +19,5 @@ The site can publish with the clearly identified legal/contact/trader placeholde
 
 ## Firstmate post-merge setup
 
-- [ ] After the approved merge, configure Namecheap DNS and GitHub Pages for `ironvei-game.online`, verify HTTPS, redirects and sitemap/canonical behavior. See the exact setup checklist in [docs/deploy.md](docs/deploy.md). Do not configure DNS or Pages custom-domain settings as part of this site change.
+- [x] Namecheap DNS and the GitHub Pages custom domain for `ironvei-game.online` are already configured (observed 2026-10-18; see [docs/deploy.md](docs/deploy.md)).
+- [ ] After the approved merge, decide on HTTPS enforcement (`https_enforced=false` as observed), then verify apex and `www` redirects, canonical tags and sitemap behavior. Do not change DNS or Pages settings as part of this site change.

@@ -144,13 +144,15 @@ def anchor_hrefs(parser: PageParser) -> list[str]:
 
 def check_alpha_links(parser: PageParser) -> None:
     anchors = anchor_hrefs(parser)
-    email_targets = {
-        urlsplit(url).path.lower()
-        for url in anchors
-        if urlsplit(url).scheme.lower() == "mailto"
-    }
-    if "support@ironvei-game.online" not in email_targets:
-        error("Support page is missing the request-access email link")
+    issues = "https://github.com/kayis-rahman/ironveil-site/issues"
+    if issues not in anchors:
+        error("Support page is missing the public site issues contact link")
+    for url in anchors:
+        if urlsplit(url).scheme.lower() == "mailto":
+            error(
+                "Support page must not publish an email address until the owner "
+                f"supplies and confirms one: {url}"
+            )
 
     apple_help = "https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/"
     if apple_help not in anchors:
