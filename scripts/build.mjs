@@ -127,14 +127,8 @@ async function buildStaticAssets(responsive) {
   const icon = await writeHashedBytes('assets/brand', 'favicon', 'png', favicon);
   mappings.set('assets/brand/favicon.png', icon.path);
 
-  const shareSource = path.join(ROOT, 'assets/source/gameplay/island.webp');
-  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 88, mozjpeg: true }).toBuffer();
-  await verifyMetadataStripped(shareBytes, 'social share image');
-  const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
-  mappings.set('assets/brand/share.png', share.path);
-
   for (const [sourcePath, record] of responsive) mappings.set(sourcePath, record.fallback.webp.path);
-  return { mappings, share: share.path };
+  return mappings;
 }
 
 function rewritePicture(markup, pagePath, responsive) {
@@ -189,7 +183,7 @@ async function minifyCssAndJs() {
   return { css: cssAsset.path, js: jsAsset.path };
 }
 
-async function buildHtml(responsive, mappings, sharePath) {
+async function buildHtml(responsive, mappings) {
   const pages = await sourcePages();
   const minifierMappings = new Map(mappings);
   for (const page of pages) {
@@ -199,7 +193,6 @@ async function buildHtml(responsive, mappings, sharePath) {
     }
     html = rewritePicture(html, page, responsive);
     html = rewriteAssetAttributes(html, page, minifierMappings);
-    html = html.replaceAll('@@OG_IMAGE_URL@@', new URL(sharePath, SITE_URL).href);
     html = html.replaceAll('@@SITE_URL@@', SITE_URL);
     if (page !== '404.html') {
       const route = page === 'index.html' ? '' : page.replace(/\/index\.html$/, '/');
@@ -207,7 +200,6 @@ async function buildHtml(responsive, mappings, sharePath) {
       html = html.replace('</head>', `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}"></head>`);
     }
     if (html.includes('@@')) throw new Error(`${page}: unresolved build placeholder`);
-    html = html.replace(/(<meta property="og:image" content="[^"]+">)/, '$1<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Early Ironveil gameplay capture of the island board and resources">');
     const output = await minifyHtml(html, {
       collapseWhitespace: true,
       conservativeCollapse: false,
@@ -242,11 +234,11 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
   const responsive = await makeResponsiveImages();
-  const { mappings, share } = await buildStaticAssets(responsive);
+  const mappings = await buildStaticAssets(responsive);
   const { css, js } = await minifyCssAndJs();
   mappings.set('__styles__', css);
   mappings.set('__script__', js);
-  await buildHtml(responsive, mappings, share);
+  await buildHtml(responsive, mappings);
   await buildDiscoveryFiles();
   const totalBytes = await directoryBytes(DIST);
   console.log(`Built ${DIST} for ${SITE_URL}`);
