@@ -66,6 +66,8 @@ class PageParser(html.parser.HTMLParser):
         self.candidate_urls: list[str] = []
         self.image_sizes: list[tuple[str, int]] = []
         self.image_count = 0
+        self.favicon_sizes: set[str] = set()
+        self.apple_icon_sizes: set[str] = set()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
@@ -79,6 +81,10 @@ class PageParser(html.parser.HTMLParser):
                 self.links.append((values["href"] or "", rel))
                 if rel == "stylesheet":
                     self.stylesheets.append(values["href"] or "")
+                if rel == "icon":
+                    self.favicon_sizes.update((values.get("sizes") or "").lower().split())
+                if rel == "apple-touch-icon":
+                    self.apple_icon_sizes.update((values.get("sizes") or "").lower().split())
         if tag == "script" and values.get("src"):
             self.scripts.append(values["src"] or "")
         if tag == "picture":
@@ -221,9 +227,10 @@ def main() -> int:
         for kind in {"icon", "apple-touch-icon", "manifest"}:
             if kind not in link_kinds:
                 error(f"Missing {kind} link in {relative}")
-        for size in ['sizes="16x16"', 'sizes="32x32"', 'sizes="180x180"']:
-            if size not in source:
-                error(f"Missing {size} site icon in {relative}")
+        if not {"16x16", "32x32"}.issubset(parser.favicon_sizes):
+            error(f"Missing 16px or 32px PNG site icon in {relative}")
+        if "180x180" not in parser.apple_icon_sizes:
+            error(f"Missing 180px Apple touch icon in {relative}")
 
         page_weight = page.stat().st_size
         for url, kind in parser.links:
