@@ -8,10 +8,11 @@ function startPage(savedChoice) {
   const appended = [];
   const listeners = {};
   const bannerListeners = {};
+  const privacyLink = { href: 'https://example.test/ironveil-site/privacy/' };
   const document = {
     title: 'Ironveil',
     referrer: '',
-    currentScript: { src: 'https://example.test/ironveil-site/scripts/site.js' },
+    currentScript: { src: 'https://example.test/ironveil-site/assets/js/site-a1b2c3d4.js' },
     documentElement: { classList: { add() {} } },
     head: { append(element) { appended.push(element); } },
     body: { append(element) { appended.push(element); } },
@@ -23,6 +24,9 @@ function startPage(savedChoice) {
         addEventListener(name, listener) { bannerListeners[name] = listener; },
         querySelector() { return { focus() {} }; },
       };
+    },
+    querySelector(selector) {
+      return selector === '.site-footer nav a[href*="privacy"]' ? privacyLink : null;
     },
     querySelectorAll() { return []; },
     addEventListener(name, listener) { listeners[name] = listener; },
@@ -38,7 +42,7 @@ function startPage(savedChoice) {
     window,
     document,
     localStorage,
-    location: { pathname: '/ironveil-site/', href: 'https://example.test/ironveil-site/' },
+    location: { pathname: '/ironveil-site/release/', href: 'https://example.test/ironveil-site/release/' },
     URL,
     URLSearchParams,
     Date,
@@ -48,6 +52,7 @@ function startPage(savedChoice) {
     appended,
     window,
     banner: appended.find((item) => item.tagName === 'section'),
+    privacyLink,
     clickConsent(value) {
       bannerListeners.click({
         target: { closest: () => ({ dataset: { consent: value } }) },
@@ -58,6 +63,7 @@ function startPage(savedChoice) {
 
 const undecided = startPage(null);
 assert.equal(undecided.banner.hidden, false, 'new visitors should see the consent prompt');
+assert.ok(undecided.banner.innerHTML.includes(`href="${undecided.privacyLink.href}"`), 'the banner reuses the footer privacy destination under a repository subpath');
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'no GA script request is made before consent');
 undecided.clickConsent('rejected');
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'rejecting analytics makes no GA script request');

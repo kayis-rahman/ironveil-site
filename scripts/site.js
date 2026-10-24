@@ -95,8 +95,8 @@
   banner.setAttribute('aria-label', 'Analytics preferences');
   banner.setAttribute('aria-describedby', 'analytics-consent-description');
   banner.hidden = true;
-  const privacyUrl = new URL('../privacy/', document.currentScript.src);
-  banner.innerHTML = '<p id="analytics-consent-description">Allow optional Google Analytics to measure visits and store links? Analytics stays off unless you accept. <a href="' + privacyUrl.href + '">Privacy details</a>.</p><button type="button" data-consent="accepted">Accept analytics</button><button type="button" class="secondary" data-consent="rejected">Reject</button>';
+  const privacyUrl = document.querySelector('.site-footer nav a[href*="privacy"]').href;
+  banner.innerHTML = '<p id="analytics-consent-description">Allow optional Google Analytics to measure visits and store links? Analytics stays off unless you accept. <a href="' + privacyUrl + '">Privacy details</a>.</p><button type="button" data-consent="accepted">Accept analytics</button><button type="button" class="secondary" data-consent="rejected">Reject</button>';
   document.body.append(banner);
   banner.addEventListener('click', (event) => {
     const button = event.target.closest('[data-consent]');
