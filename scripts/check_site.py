@@ -198,6 +198,16 @@ def main() -> int:
         error("dist/ is missing; run `npm run build` first")
         return 1
 
+    analytics_source = (ROOT / "scripts/site.js").read_text(encoding="utf-8")
+    if not re.search(r"const GA4_MEASUREMENT_ID = ''\s*;", analytics_source):
+        error("GA4 measurement ID must remain empty until supplied")
+    if re.search(r"G-[A-Z0-9]{6,}", analytics_source):
+        error("A GA4 measurement ID must not be hard-coded")
+    if "if (!GA4_MEASUREMENT_ID || !analyticsConsent || analyticsReady) return;" not in analytics_source:
+        error("GA4 script loading must be gated by both a configured ID and accepted consent")
+    if "script.src = `https://www.googletagmanager.com/gtag/js?id=" not in analytics_source:
+        error("GA4 must be loaded dynamically only after the consent gate")
+
     total_site = sum(path.stat().st_size for path in DIST.rglob("*") if path.is_file())
     if total_site > SITE_BUDGET:
         error(f"Site artifact is {total_site / 1024:.0f} KiB, over {SITE_BUDGET / 1024:.0f} KiB")
