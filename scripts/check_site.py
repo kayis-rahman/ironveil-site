@@ -24,7 +24,8 @@ PAGES = [
 PAGE_BUDGET = 800 * 1024
 IMAGE_BUDGET = 500 * 1024
 MEDIA_BUDGET = 750 * 1024
-SITE_BUDGET = 3 * 1024 * 1024
+STORY_WIDTHS = {640, 1280, 1920, 2560, 3840}
+SITE_BUDGET = 12 * 1024 * 1024
 SITE_URL = os.environ.get("SITE_URL", "https://ironvei-game.online/")
 if not SITE_URL.endswith("/"):
     SITE_URL += "/"
@@ -87,7 +88,7 @@ class PageParser(html.parser.HTMLParser):
         if tag == "script" and values.get("src"):
             self.scripts.append(values["src"] or "")
         if tag == "picture":
-            self.picture_stack.append({"formats": set(), "candidates": []})
+            self.picture_stack.append({"formats": set(), "candidates": [], "initial_load": False})
         if tag == "source":
             if self.picture_stack:
                 record = self.picture_stack[-1]
@@ -111,6 +112,7 @@ class PageParser(html.parser.HTMLParser):
                 if self.picture_stack:
                     record = self.picture_stack[-1]
                     candidates = record["candidates"]
+                    record["initial_load"] = bool(values.get("srcset")) and values.get("loading") != "lazy"
                     parsed = srcset_urls(values.get("srcset") or values.get("data-srcset") or "")
                     candidates.extend(parsed)
                     self.candidate_urls.extend(url for url, _ in parsed)
@@ -139,7 +141,7 @@ class PageParser(html.parser.HTMLParser):
             if "image/avif" not in formats or "image/webp" not in formats:
                 error("Every picture must provide both AVIF and WebP sources")
             candidates = record["candidates"]
-            if candidates:
+            if candidates and record.get("initial_load"):
                 highest_width = max(width for _, width in candidates)
                 self.picture_costs.append([(url, width) for url, width in candidates if width == highest_width])
 
@@ -223,6 +225,12 @@ def main() -> int:
             error(f"Cannot parse {relative}: {exc}")
             continue
         link_kinds = {kind for _, kind in parser.links}
+        if relative == "index.html":
+            for image_number in range(1, 16):
+                image_pattern = rf"{image_number:02d}-[0-9a-f]{{12}}\.webp (\d+)w"
+                widths = {int(width) for width in re.findall(image_pattern, source)}
+                if widths != STORY_WIDTHS:
+                    error(f"Homepage story image {image_number:02d} must provide responsive widths {sorted(STORY_WIDTHS)}")
         for kind in {"icon", "apple-touch-icon"}:
             if kind not in link_kinds:
                 error(f"Missing {kind} link in {relative}")
