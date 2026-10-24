@@ -11,6 +11,11 @@ const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
 const WIDTHS = [360, 640, 960, 1280, 1600];
 const IMAGE_BUDGET = 500 * 1024;
+const DISPLAY_NAMES = {
+  scout: 'Sunoracle',
+  storm: 'Stormwarden',
+  trickster: 'Slyfox',
+};
 
 function normalizeSiteUrl(value) {
   const url = new URL(value);
@@ -189,6 +194,9 @@ async function buildHtml(responsive, mappings, sharePath) {
   const minifierMappings = new Map(mappings);
   for (const page of pages) {
     let html = await readFile(path.join(ROOT, page), 'utf8');
+    for (const [role, name] of Object.entries(DISPLAY_NAMES)) {
+      html = html.replaceAll(`@@GOD_${role.toUpperCase()}@@`, name);
+    }
     html = rewritePicture(html, page, responsive);
     html = rewriteAssetAttributes(html, page, minifierMappings);
     html = html.replaceAll('@@OG_IMAGE_URL@@', new URL(sharePath, SITE_URL).href);
