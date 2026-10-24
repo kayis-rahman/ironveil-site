@@ -6,7 +6,7 @@ The site can publish with the clearly identified legal/contact/trader placeholde
 
 - [x] Footer copyright confirmed as “© 2026 Kayis Rahman” (captain, relayed by firstmate on 2026-10-18); applied to all page footers. The App Store copyright field is for the listing update, not this site.
 - [ ] Supply the legal name for the Privacy page's “Controller / legal developer” line.
-- [ ] Supply and test a monitored privacy contact address. General product support, bug reports and alpha-access requests use this repository's public GitHub Issues.
+- [ ] Verify that support@ironvei-game.online is monitored for support and privacy requests; general enquiries use info@ironvei-game.online and social/press use social@ironvei-game.online.
 - [ ] Self-assess EU trader status and authorize any legally required trader details before publication.
 - [ ] Approve the fact-checked Privacy page before publication; update it if the live service or data practices change.
 
