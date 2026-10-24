@@ -11,6 +11,11 @@ const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
 const WIDTHS = [360, 640, 960, 1280];
 const IMAGE_BUDGET = 500 * 1024;
+const DISPLAY_NAMES = {
+  scout: 'Sunoracle',
+  storm: 'Stormwarden',
+  trickster: 'Slyfox',
+};
 
 function normalizeSiteUrl(value) {
   const url = new URL(value);
@@ -135,7 +140,7 @@ async function buildStaticAssets(responsive) {
   await writeFile(icoPath, icoBytes);
   mappings.set('assets/brand/favicon.ico', 'favicon.ico');
   mappings.set('favicon.ico', 'favicon.ico');
-  const shareSource = path.join(ROOT, 'assets/source/gameplay/island.webp');
+  const shareSource = path.join(ROOT, 'assets/source/hero/snowy-island-campfire.webp');
   const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
   await verifyMetadataStripped(shareBytes, 'social share image');
   const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
@@ -210,6 +215,9 @@ async function buildHtml(responsive, mappings, sharePath) {
   const minifierMappings = new Map(mappings);
   for (const page of pages) {
     let html = await readFile(path.join(ROOT, page), 'utf8');
+    for (const [role, name] of Object.entries(DISPLAY_NAMES)) {
+      html = html.replaceAll(`@@GOD_${role.toUpperCase()}@@`, name);
+    }
     html = rewritePicture(html, page, responsive);
     html = rewriteAssetAttributes(html, page, minifierMappings);
     html = html.replaceAll('@@OG_IMAGE_URL@@', new URL(sharePath, SITE_URL).href);
@@ -220,7 +228,7 @@ async function buildHtml(responsive, mappings, sharePath) {
       html = html.replace('</head>', `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}"></head>`);
     }
     if (html.includes('@@')) throw new Error(`${page}: unresolved build placeholder`);
-    html = html.replace(/(<meta property="og:image" content="[^"]+">)/, '$1<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Early Ironveil gameplay capture of the island board and resources">');
+    html = html.replace(/(<meta property="og:image" content="[^"]+">)/, '$1<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="A snowy island camp and its last fire">');
     const output = await minifyHtml(html, {
       collapseWhitespace: true,
       conservativeCollapse: false,
