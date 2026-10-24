@@ -138,23 +138,26 @@
     });
   }
   const story = document.querySelector('.last-fire-story');
+  const hydrate = (scene) => {
+    for (const asset of scene.querySelectorAll('[data-srcset], [data-src]')) {
+      for (const attribute of ['srcset', 'src', 'sizes']) {
+        const deferred = asset.getAttribute(`data-${attribute}`);
+        if (deferred) {
+          asset.setAttribute(attribute, deferred);
+          asset.removeAttribute(`data-${attribute}`);
+        }
+      }
+    }
+  };
+  if (story && !('IntersectionObserver' in window)) {
+    for (const scene of story.querySelectorAll('.story-scene')) hydrate(scene);
+  }
   if (story && 'IntersectionObserver' in window) {
     const scenes = [...story.querySelectorAll('.story-scene')];
     const steps = [...story.querySelectorAll('[data-step]')];
     let activeIndex = 0;
     let parallaxFrame = 0;
     document.documentElement.classList.add('js');
-    const hydrate = (scene) => {
-      for (const asset of scene.querySelectorAll('[data-srcset], [data-src]')) {
-        for (const attribute of ['srcset', 'src', 'sizes']) {
-          const deferred = asset.getAttribute(`data-${attribute}`);
-          if (deferred) {
-            asset.setAttribute(attribute, deferred);
-            asset.removeAttribute(`data-${attribute}`);
-          }
-        }
-      }
-    };
     const activate = (index, prefetchNext = false) => {
       activeIndex = index;
       for (const [sceneIndex, scene] of scenes.entries()) {

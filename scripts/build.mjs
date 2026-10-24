@@ -174,11 +174,12 @@ function rewritePicture(markup, pagePath, responsive) {
     let img = inner.match(/<img\b[^>]*>/i)?.[0];
     if (!img) throw new Error(`${pagePath}: picture without an img fallback`);
     const fallback = output.fallback.webp.path;
-    img = replaceAttribute(img, 'src', publicRelative(pagePath, fallback));
+    img = replaceAttribute(img, deferred ? 'data-src' : 'src', publicRelative(pagePath, fallback));
     img = replaceAttribute(img, srcsetAttribute, webpSrcset);
     img = replaceAttribute(img, sizesAttribute, sizes);
     const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '').replace(/\s+data-defer(?:="[^"]*")?/i, '');
-    return `<picture${pictureAttrs}>${avif}${webp}${img}</picture>`;
+    const noScriptFallback = deferred ? `<noscript>${replaceAttribute(img, 'data-src', 'src')}</noscript>` : '';
+    return `<picture${pictureAttrs}>${avif}${webp}${img}${noScriptFallback}</picture>`;
   });
 }
 
