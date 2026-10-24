@@ -9,7 +9,7 @@ import { minify as minifyJs } from 'terser';
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
-const WIDTHS = [360, 640, 960, 1280];
+const RESPONSIVE_WIDTHS = [640, 1280, 1920, 2560, 3840];
 const IMAGE_BUDGET = 500 * 1024;
 const DISPLAY_NAMES = {
   scout: 'Sunoracle',
@@ -93,11 +93,16 @@ async function makeResponsiveImages() {
     if (!metadata.width || !metadata.height) throw new Error(`Cannot inspect image dimensions: ${sourcePath}`);
     const base = path.basename(sourcePath, path.extname(sourcePath)).replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
     const candidates = [];
-    for (const requestedWidth of WIDTHS) {
-      const width = Math.min(requestedWidth, metadata.width);
+    const isStory = /^assets\/source\/story\/\d+\.webp$/.test(sourcePath);
+    for (const width of RESPONSIVE_WIDTHS) {
       if (candidates.some((item) => item.width === width)) continue;
-      const avifBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).avif({ quality: 50, effort: 5 }).toBuffer();
-      const webpBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 68, effort: 5, smartSubsample: true }).toBuffer();
+      const makeImage = () => {
+        let image = sharp(fullSource).rotate().resize({ width, kernel: 'lanczos3' });
+        if (width > metadata.width) image = image.sharpen(0.35, 0.7, 1.0);
+        return image;
+      };
+      const avifBytes = await makeImage().avif({ quality: isStory ? 58 : 50, effort: 5 }).toBuffer();
+      const webpBytes = await makeImage().webp({ quality: isStory ? 84 : 68, effort: 5, smartSubsample: true }).toBuffer();
       const avif = await writeHashedBytes('assets/media', base, 'avif', avifBytes);
       const webp = await writeHashedBytes('assets/media', base, 'webp', webpBytes);
       if (avif.bytes > IMAGE_BUDGET || webp.bytes > IMAGE_BUDGET) {
