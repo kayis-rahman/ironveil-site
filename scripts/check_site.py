@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import html.parser
-import json
 import os
 import re
 import sys
@@ -77,7 +76,7 @@ class PageParser(html.parser.HTMLParser):
             self.links.append((values["href"] or "", "link"))
         if tag == "link" and values.get("href"):
             rel = (values.get("rel") or "").lower()
-            if rel in {"stylesheet", "icon", "apple-touch-icon", "manifest"}:
+            if rel in {"stylesheet", "icon", "apple-touch-icon"}:
                 self.links.append((values["href"] or "", rel))
                 if rel == "stylesheet":
                     self.stylesheets.append(values["href"] or "")
@@ -224,7 +223,7 @@ def main() -> int:
             error(f"Cannot parse {relative}: {exc}")
             continue
         link_kinds = {kind for _, kind in parser.links}
-        for kind in {"icon", "apple-touch-icon", "manifest"}:
+        for kind in {"icon", "apple-touch-icon"}:
             if kind not in link_kinds:
                 error(f"Missing {kind} link in {relative}")
         if not {"16x16", "32x32"}.issubset(parser.favicon_sizes):
@@ -289,20 +288,6 @@ def main() -> int:
             if not re.search(r"-[0-9a-f]{12}\.", asset.name):
                 error(f"Built asset is not content-hashed: {asset.relative_to(DIST)}")
 
-    manifest_path = DIST / "assets/brand/site.webmanifest"
-    try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if manifest.get("name") != "Ironveil" or manifest.get("short_name") != "Ironveil":
-            error("Web manifest must use Ironveil as its product name")
-        for size in {"192x192", "512x512"}:
-            icon = next((item for item in manifest.get("icons", []) if item.get("sizes") == size), None)
-            if not icon:
-                error(f"Web manifest is missing its {size} icon")
-                continue
-            if not (manifest_path.parent / icon.get("src", "")).is_file():
-                error(f"Web manifest icon does not exist: {icon.get('src', '')}")
-    except (json.JSONDecodeError, OSError) as exc:
-        error(f"Invalid site web manifest: {exc}")
     if not (DIST / "favicon.ico").is_file():
         error("Root favicon.ico is missing")
 

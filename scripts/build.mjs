@@ -135,16 +135,6 @@ async function buildStaticAssets(responsive) {
   await writeFile(icoPath, icoBytes);
   mappings.set('assets/brand/favicon.ico', 'favicon.ico');
   mappings.set('favicon.ico', 'favicon.ico');
-  const manifestSource = JSON.parse(await readFile(path.join(ROOT, 'assets/brand/site.webmanifest'), 'utf8'));
-  for (const entry of manifestSource.icons) {
-    const sourcePath = `assets/brand/${entry.src}`;
-    entry.src = path.basename(mappings.get(sourcePath));
-  }
-  const manifestOutput = path.join(DIST, 'assets/brand/site.webmanifest');
-  await ensureParent(manifestOutput);
-  await writeFile(manifestOutput, `${JSON.stringify(manifestSource, null, 2)}\n`);
-  mappings.set('assets/brand/site.webmanifest', 'assets/brand/site.webmanifest');
-
   const shareSource = path.join(ROOT, 'assets/source/gameplay/island.webp');
   const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
   await verifyMetadataStripped(shareBytes, 'social share image');
