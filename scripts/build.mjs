@@ -9,7 +9,7 @@ import { minify as minifyJs } from 'terser';
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
-const WIDTHS = [360, 640, 960, 1280, 1600];
+const WIDTHS = [360, 640, 960, 1280];
 const IMAGE_BUDGET = 500 * 1024;
 
 function normalizeSiteUrl(value) {
@@ -91,8 +91,8 @@ async function makeResponsiveImages() {
     for (const requestedWidth of WIDTHS) {
       const width = Math.min(requestedWidth, metadata.width);
       if (candidates.some((item) => item.width === width)) continue;
-      const avifBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).avif({ quality: 54, effort: 5 }).toBuffer();
-      const webpBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 80, effort: 5, smartSubsample: true }).toBuffer();
+      const avifBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).avif({ quality: 50, effort: 5 }).toBuffer();
+      const webpBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 68, effort: 5, smartSubsample: true }).toBuffer();
       const avif = await writeHashedBytes('assets/media', base, 'avif', avifBytes);
       const webp = await writeHashedBytes('assets/media', base, 'webp', webpBytes);
       if (avif.bytes > IMAGE_BUDGET || webp.bytes > IMAGE_BUDGET) {
@@ -122,8 +122,31 @@ async function buildStaticAssets(responsive) {
   const icon = await writeHashedBytes('assets/brand', 'favicon', 'png', favicon);
   mappings.set('assets/brand/favicon.png', icon.path);
 
+  for (const size of [16, 32, 48, 64, 180, 192, 512]) {
+    const sourcePath = `assets/brand/ironveil-${size}.png`;
+    const bytes = await readFile(path.join(ROOT, sourcePath));
+    await verifyMetadataStripped(bytes, sourcePath);
+    const output = await writeHashedBytes('assets/brand', `ironveil-${size}`, 'png', bytes);
+    mappings.set(sourcePath, output.path);
+  }
+  const icoBytes = await readFile(path.join(ROOT, 'assets/brand/favicon.ico'));
+  const icoPath = path.join(DIST, 'favicon.ico');
+  await ensureParent(icoPath);
+  await writeFile(icoPath, icoBytes);
+  mappings.set('assets/brand/favicon.ico', 'favicon.ico');
+  mappings.set('favicon.ico', 'favicon.ico');
+  const manifestSource = JSON.parse(await readFile(path.join(ROOT, 'assets/brand/site.webmanifest'), 'utf8'));
+  for (const entry of manifestSource.icons) {
+    const sourcePath = `assets/brand/${entry.src}`;
+    entry.src = path.basename(mappings.get(sourcePath));
+  }
+  const manifestOutput = path.join(DIST, 'assets/brand/site.webmanifest');
+  await ensureParent(manifestOutput);
+  await writeFile(manifestOutput, `${JSON.stringify(manifestSource, null, 2)}\n`);
+  mappings.set('assets/brand/site.webmanifest', 'assets/brand/site.webmanifest');
+
   const shareSource = path.join(ROOT, 'assets/source/gameplay/island.webp');
-  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 88, mozjpeg: true }).toBuffer();
+  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
   await verifyMetadataStripped(shareBytes, 'social share image');
   const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
   mappings.set('assets/brand/share.png', share.path);
@@ -143,15 +166,19 @@ function rewritePicture(markup, pagePath, responsive) {
     const sizes = attrs.match(/\bdata-sizes="([^"]+)"/i)?.[1] || '100vw';
     const avifSrcset = output.candidates.map((item) => `${publicRelative(pagePath, item.avif.path)} ${item.width}w`).join(', ');
     const webpSrcset = output.candidates.map((item) => `${publicRelative(pagePath, item.webp.path)} ${item.width}w`).join(', ');
-    const avif = `<source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">`;
-    const webp = `<source type="image/webp" srcset="${webpSrcset}" sizes="${sizes}">`;
+    const deferred = /\bdata-defer(?:\s|$)/i.test(attrs);
+    const srcsetAttribute = deferred ? 'data-srcset' : 'srcset';
+    const sizesAttribute = deferred ? 'data-sizes' : 'sizes';
+    const avif = `<source type="image/avif" ${srcsetAttribute}="${avifSrcset}" ${sizesAttribute}="${sizes}">`;
+    const webp = `<source type="image/webp" ${srcsetAttribute}="${webpSrcset}" ${sizesAttribute}="${sizes}">`;
     let img = inner.match(/<img\b[^>]*>/i)?.[0];
     if (!img) throw new Error(`${pagePath}: picture without an img fallback`);
     const fallback = output.fallback.webp.path;
-    img = replaceAttribute(img, 'src', publicRelative(pagePath, fallback));
-    img = replaceAttribute(img, 'srcset', webpSrcset);
-    img = replaceAttribute(img, 'sizes', sizes);
-    const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '');
+    img = replaceAttribute(img, deferred ? 'data-src' : 'src', publicRelative(pagePath, fallback));
+    img = replaceAttribute(img, srcsetAttribute, webpSrcset);
+    img = replaceAttribute(img, sizesAttribute, sizes);
+    if (deferred) img = img.replace(/\s+src=(?:"[^"]*"|'[^']*'|[^\s>]+)/i, '');
+    const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '').replace(/\s+data-defer(?:="[^"]*")?/i, '');
     return `<picture${pictureAttrs}>${avif}${webp}${img}</picture>`;
   });
 }
