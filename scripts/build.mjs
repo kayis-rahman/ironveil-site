@@ -174,11 +174,15 @@ function rewritePicture(markup, pagePath, responsive) {
     let img = inner.match(/<img\b[^>]*>/i)?.[0];
     if (!img) throw new Error(`${pagePath}: picture without an img fallback`);
     const fallback = output.fallback.webp.path;
+    if (deferred) {
+      img = img.replace(/\s(?:src|srcset|sizes)=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    }
     img = replaceAttribute(img, deferred ? 'data-src' : 'src', publicRelative(pagePath, fallback));
     img = replaceAttribute(img, srcsetAttribute, webpSrcset);
     img = replaceAttribute(img, sizesAttribute, sizes);
     const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '').replace(/\s+data-defer(?:="[^"]*")?/i, '');
-    const noScriptFallback = deferred ? `<noscript>${replaceAttribute(img, 'data-src', 'src')}</noscript>` : '';
+    const noScriptImage = img.replace(/\sdata-(?:src|srcset|sizes)=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    const noScriptFallback = deferred ? `<noscript>${replaceAttribute(noScriptImage, 'src', publicRelative(pagePath, fallback))}</noscript>` : '';
     return `<picture${pictureAttrs}>${avif}${webp}${img}${noScriptFallback}</picture>`;
   });
 }
