@@ -17,7 +17,7 @@
     }
   }
 
-  const pageType = location.pathname === '/privacy/' || location.pathname === '/support/' ? location.pathname.slice(1, -1) : '';
+  const pageType = location.pathname.endsWith('/privacy/') ? 'privacy' : location.pathname.endsWith('/support/') ? 'support' : '';
   let analyticsConsent = false;
   let analyticsReady = false;
 
@@ -89,7 +89,8 @@
   banner.setAttribute('aria-label', 'Analytics preferences');
   banner.setAttribute('aria-describedby', 'analytics-consent-description');
   banner.hidden = true;
-  banner.innerHTML = '<p id="analytics-consent-description">Allow optional Google Analytics to measure visits and site links? Analytics stays off unless you accept. <a href="' + (location.pathname.startsWith('/') ? '/privacy/' : 'privacy/') + '">Privacy details</a>.</p><button type="button" data-consent="accepted">Accept analytics</button><button type="button" class="secondary" data-consent="rejected">Reject</button>';
+  const privacyUrl = new URL('../privacy/', document.currentScript.src);
+  banner.innerHTML = '<p id="analytics-consent-description">Allow optional Google Analytics to measure visits and store links? Analytics stays off unless you accept. <a href="' + privacyUrl.href + '">Privacy details</a>.</p><button type="button" data-consent="accepted">Accept analytics</button><button type="button" class="secondary" data-consent="rejected">Reject</button>';
   document.body.append(banner);
   banner.addEventListener('click', (event) => {
     const button = event.target.closest('[data-consent]');
@@ -123,31 +124,10 @@
       if (!link) return;
       const url = new URL(link.href, location.href);
       const host = url.hostname.toLowerCase();
-      let eventName;
-      let label;
-      if (url.protocol === 'mailto:') eventName = 'mailto_click';
-      else if (host === 'apps.apple.com' || host === 'itunes.apple.com') { eventName = 'store_click'; label = 'app_store'; }
-      else if (host === 'play.google.com') { eventName = 'store_click'; label = 'google_play'; }
-      else if (host === 'instagram.com' || host.endsWith('.instagram.com')) { eventName = 'social_click'; label = 'instagram'; }
-      else if (host === 'x.com' || host === 'twitter.com') { eventName = 'social_click'; label = 'x'; }
-      else if (host === 'tiktok.com' || host.endsWith('.tiktok.com')) { eventName = 'social_click'; label = 'tiktok'; }
-      if (eventName) sendEvent(eventName, { link_url: url.protocol === 'mailto:' ? 'mailto' : `${url.origin}${url.pathname}`, link_domain: host, ...(label ? { link_type: label } : {}) });
+      let store;
+      if (host === 'apps.apple.com' || host === 'itunes.apple.com') store = 'app_store';
+      else if (host === 'play.google.com') store = 'google_play';
+      if (store) sendEvent('store_click', { link_url: `${url.origin}${url.pathname}`, link_domain: host, link_type: store });
     });
-
-    if (!pageType && document.querySelector('.hero-home')) {
-      const sections = document.querySelectorAll('.hero-home, main > .section');
-      if ('IntersectionObserver' in window) {
-        const seen = new Set();
-        const observer = new IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            const id = entry.target.id || 'top';
-            if (!entry.isIntersecting || seen.has(id)) continue;
-            seen.add(id);
-            sendEvent('scroll_depth', { section_id: id });
-          }
-        }, { threshold: 0.5 });
-        sections.forEach((section) => observer.observe(section));
-      }
-    }
   }
 })();
