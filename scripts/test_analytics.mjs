@@ -28,7 +28,6 @@ function startPage(savedChoice) {
     addEventListener(name, listener) { listeners[name] = listener; },
   };
   const window = {
-    IRONVEIL_GA4_MEASUREMENT_ID: 'G-TEST123456',
     matchMedia() { return { matches: true }; },
   };
   const localStorage = {
@@ -66,9 +65,13 @@ const accepted = startPage(null);
 accepted.clickConsent('accepted');
 const gaScript = accepted.appended.find((item) => item.tagName === 'script');
 assert.ok(gaScript, 'accepting analytics loads the GA script');
-assert.match(gaScript.src, /^https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-TEST123456$/);
+assert.equal(gaScript.src, 'https://www.googletagmanager.com/gtag/js?id=G-TVT4EJPXTV');
 
 const remembered = startPage('accepted');
 assert.ok(remembered.appended.some((item) => item.tagName === 'script'), 'a previously accepted choice loads GA on the next visit');
+
+const rejectedBefore = startPage('rejected');
+assert.equal(rejectedBefore.banner.hidden, true, 'a previously rejected choice keeps the prompt hidden');
+assert.equal(rejectedBefore.appended.some((item) => item.tagName === 'script'), false, 'a previously rejected choice makes no GA script request');
 
 console.log('Analytics consent behavior passed.');

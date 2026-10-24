@@ -1,5 +1,5 @@
 (() => {
-  const GA4_MEASUREMENT_ID = window.IRONVEIL_GA4_MEASUREMENT_ID || '';
+  const GA4_MEASUREMENT_ID = 'G-TVT4EJPXTV';
   const CONSENT_KEY = 'ironveil-analytics-consent';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!reduceMotion.matches && 'IntersectionObserver' in window) {
