@@ -12,10 +12,7 @@ The site can publish with the clearly identified legal/contact/trader placeholde
 
 ## Art approval
 
-- [x] On 2026-10-11, the captain approved the screenplay plates as the canonical Ironveil visual reference and directed that `01-1a.png` be used as the public-site full-bleed hero. The source remains read-only; the site uses an optimized WebP derivative. Record this and the origin in [docs/fact-sources.md](docs/fact-sources.md). Approval may be withdrawn before merge.
-- [x] The captain approved these existing assets for public use on 2026-10-11; approval may be withdrawn before merge:
-  - `assets/brand/favicon.png` as the favicon only.
-  - `assets/source/gameplay/deity-select.webp`, `assets/source/gameplay/island-phone.webp`, `assets/source/gameplay/island.webp`, `assets/source/gameplay/result-win.webp`, and `assets/source/gameplay/winter-island.webp` as approved early-build gameplay capture sources, not final store screenshots.
+Current public-art sources and usage are recorded in [docs/fact-sources.md](docs/fact-sources.md).
 
 ## Firstmate post-merge setup
 

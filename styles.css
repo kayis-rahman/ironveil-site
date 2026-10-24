@@ -189,3 +189,63 @@ main { min-height: 65vh; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .motion-ready .reveal, .reveal { opacity: 1; transform: none; }
 }
+
+/* The Last Fire cinematic homepage */
+:root { --night: #0b0e15; --gold: #e8c477; }
+.home-header { position: absolute; }
+.home-header .header-inner { min-height: 76px; }
+.last-fire-hero { min-height: min(920px, 100svh); height: 100svh; max-height: 1000px; }
+.last-fire-hero .hero-art img { object-position: center 55%; animation: last-fire-drift 28s ease-in-out infinite alternate; }
+.last-fire-hero .hero-shade { background: linear-gradient(90deg, #090c14e8 0%, #090c1480 48%, transparent 82%), linear-gradient(0deg, #090c14cb 0%, transparent 56%); }
+.last-fire-hero .hero-content { padding-top: 170px; padding-bottom: 100px; }
+.last-fire-hero h1 { font-size: clamp(4.2rem, 10vw, 8.8rem); }
+.last-fire-hero .actions { justify-content: flex-start; }
+.last-fire-hero .button-quiet { background: #0b0e1580; }
+.opening-caption { position: absolute; z-index: 3; right: clamp(22px, 5vw, 64px); bottom: 34px; color: #e6dfd2; font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; }
+.last-fire-story { position: relative; isolation: isolate; background: #0b0e15; }
+.story-stage { position: relative; height: auto; min-height: 0; overflow: visible; background: #10131a; }
+.story-scene { position: relative; min-height: 75svh; overflow: hidden; background: #10131a; }
+.story-scene picture { position: absolute; inset: 0; }
+.story-scene picture img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.story-scene .scene-shade { position: absolute; inset: 0; background: linear-gradient(90deg, #0a0d14d8 0%, #0a0d1470 45%, transparent 78%), linear-gradient(0deg, #0a0d14b8 0%, transparent 60%); }
+.scene-copy { position: absolute; z-index: 2; left: clamp(24px, 8vw, 118px); bottom: clamp(60px, 13vh, 145px); width: min(620px, calc(100% - 48px)); }
+.scene-copy .eyebrow { margin-bottom: 12px; }
+.scene-copy h2 { max-width: 650px; margin: 0 0 14px; font: 700 clamp(3.1rem, 7.3vw, 6.5rem)/.9 var(--serif); letter-spacing: -.045em; text-wrap: balance; }
+.scene-copy > p:last-child { max-width: 480px; margin: 0; color: #e4e0db; font-size: clamp(1rem, 1.6vw, 1.15rem); }
+.js .story-stage { position: sticky; top: 0; z-index: 1; height: 100svh; min-height: 560px; overflow: hidden; }
+.js .story-scene { position: absolute; inset: 0; min-height: 0; opacity: 0; pointer-events: none; transition: opacity 1.15s ease; }
+.js .story-scene.is-active { opacity: 1; pointer-events: auto; }
+.js .story-scene picture img { transform: scale(1.04); transition: transform 12s cubic-bezier(.2,.6,.25,1); }
+.js .story-scene.is-active picture img { transform: scale(1.14) translate3d(var(--drift-x, 0), var(--drift-y, 0), 0); }
+.js .story-scene .scene-copy { opacity: 0; transform: translateY(20px); transition: opacity .75s ease .18s, transform .75s ease .18s; }
+.js .story-scene.is-active .scene-copy { opacity: 1; transform: none; }
+.story-progress { position: absolute; z-index: 4; left: clamp(24px, 8vw, 118px); right: clamp(24px, 8vw, 118px); bottom: 24px; height: 2px; background: #ffffff55; }
+.story-progress span { display: block; width: var(--story-progress, 7%); height: 100%; background: var(--gold); transition: width .6s ease; }
+.js .story-steps { position: relative; z-index: 0; margin-top: -100svh; pointer-events: none; }
+.js .story-steps > div { height: 90svh; min-height: 580px; }
+.last-fire-gameplay { width: min(900px, 100%); margin: 35px auto 0; padding: 12px; border: 1px solid #ffffff30; background: #161a28; box-shadow: 0 24px 70px #0005; }
+.last-fire-gameplay img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
+.last-fire-gameplay figcaption { padding: 9px 3px 0; color: #c5c5ca; font-size: .78rem; }
+.section-island { background: #121722; }
+@keyframes last-fire-drift { from { transform: scale(1.02) translate3d(0, 0, 0); } to { transform: scale(1.09) translate3d(-1%, -.3%, 0); } }
+@media (max-width: 760px) {
+  .last-fire-hero { min-height: 100svh; height: 100svh; }
+  .last-fire-hero .hero-content { padding: 185px 22px 90px; }
+  .last-fire-hero .hero-art img { object-position: 58% center; }
+  .last-fire-hero .hero-shade { background: linear-gradient(0deg, #090c14ee 0%, #090c1485 58%, #090c1460 100%); }
+  .last-fire-hero h1 { font-size: clamp(4rem, 16vw, 6.3rem); }
+  .last-fire-hero .actions { display: grid; justify-items: start; gap: 9px; }
+  .last-fire-hero .button { min-height: 44px; padding: 9px 15px; font-size: .8rem; }
+  .opening-caption { display: none; }
+  .story-stage { min-height: 540px; }
+  .story-scene .scene-shade { background: linear-gradient(0deg, #0a0d14ed 0%, #0a0d1480 56%, transparent 100%); }
+  .scene-copy { left: 24px; right: 22px; bottom: 72px; width: auto; }
+  .scene-copy h2 { font-size: clamp(3.1rem, 13vw, 5rem); }
+  .story-progress { left: 24px; right: 24px; bottom: 22px; }
+  .js .story-steps > div { height: 85svh; min-height: 560px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .last-fire-hero .hero-art img { animation: none; transform: none; }
+  .js .story-scene, .js .story-scene picture img, .js .story-scene .scene-copy, .story-progress span { transition: none; }
+  .js .story-scene.is-active picture img { transform: none; }
+}

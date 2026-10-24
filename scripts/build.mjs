@@ -9,7 +9,7 @@ import { minify as minifyJs } from 'terser';
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
-const WIDTHS = [360, 640, 960, 1280, 1600];
+const WIDTHS = [360, 640, 960, 1280];
 const IMAGE_BUDGET = 500 * 1024;
 const DISPLAY_NAMES = {
   scout: 'Sunoracle',
@@ -96,8 +96,8 @@ async function makeResponsiveImages() {
     for (const requestedWidth of WIDTHS) {
       const width = Math.min(requestedWidth, metadata.width);
       if (candidates.some((item) => item.width === width)) continue;
-      const avifBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).avif({ quality: 54, effort: 5 }).toBuffer();
-      const webpBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 80, effort: 5, smartSubsample: true }).toBuffer();
+      const avifBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).avif({ quality: 50, effort: 5 }).toBuffer();
+      const webpBytes = await sharp(fullSource).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 68, effort: 5, smartSubsample: true }).toBuffer();
       const avif = await writeHashedBytes('assets/media', base, 'avif', avifBytes);
       const webp = await writeHashedBytes('assets/media', base, 'webp', webpBytes);
       if (avif.bytes > IMAGE_BUDGET || webp.bytes > IMAGE_BUDGET) {
@@ -127,8 +127,27 @@ async function buildStaticAssets(responsive) {
   const icon = await writeHashedBytes('assets/brand', 'favicon', 'png', favicon);
   mappings.set('assets/brand/favicon.png', icon.path);
 
+  for (const size of [16, 32, 48, 64, 180, 192, 512]) {
+    const sourcePath = `assets/brand/ironveil-${size}.png`;
+    const bytes = await readFile(path.join(ROOT, sourcePath));
+    await verifyMetadataStripped(bytes, sourcePath);
+    const output = await writeHashedBytes('assets/brand', `ironveil-${size}`, 'png', bytes);
+    mappings.set(sourcePath, output.path);
+  }
+  const icoBytes = await readFile(path.join(ROOT, 'assets/brand/favicon.ico'));
+  const icoPath = path.join(DIST, 'favicon.ico');
+  await ensureParent(icoPath);
+  await writeFile(icoPath, icoBytes);
+  mappings.set('assets/brand/favicon.ico', 'favicon.ico');
+  mappings.set('favicon.ico', 'favicon.ico');
+  const shareSource = path.join(ROOT, 'assets/source/hero/snowy-island-campfire.webp');
+  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  await verifyMetadataStripped(shareBytes, 'social share image');
+  const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
+  mappings.set('assets/brand/share.png', share.path);
+
   for (const [sourcePath, record] of responsive) mappings.set(sourcePath, record.fallback.webp.path);
-  return mappings;
+  return { mappings, share: share.path };
 }
 
 function rewritePicture(markup, pagePath, responsive) {
@@ -142,16 +161,24 @@ function rewritePicture(markup, pagePath, responsive) {
     const sizes = attrs.match(/\bdata-sizes="([^"]+)"/i)?.[1] || '100vw';
     const avifSrcset = output.candidates.map((item) => `${publicRelative(pagePath, item.avif.path)} ${item.width}w`).join(', ');
     const webpSrcset = output.candidates.map((item) => `${publicRelative(pagePath, item.webp.path)} ${item.width}w`).join(', ');
-    const avif = `<source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">`;
-    const webp = `<source type="image/webp" srcset="${webpSrcset}" sizes="${sizes}">`;
+    const deferred = /\bdata-defer(?:\s|$)/i.test(attrs);
+    const srcsetAttribute = deferred ? 'data-srcset' : 'srcset';
+    const sizesAttribute = deferred ? 'data-sizes' : 'sizes';
+    const avif = `<source type="image/avif" ${srcsetAttribute}="${avifSrcset}" ${sizesAttribute}="${sizes}">`;
+    const webp = `<source type="image/webp" ${srcsetAttribute}="${webpSrcset}" ${sizesAttribute}="${sizes}">`;
     let img = inner.match(/<img\b[^>]*>/i)?.[0];
     if (!img) throw new Error(`${pagePath}: picture without an img fallback`);
     const fallback = output.fallback.webp.path;
-    img = replaceAttribute(img, 'src', publicRelative(pagePath, fallback));
-    img = replaceAttribute(img, 'srcset', webpSrcset);
-    img = replaceAttribute(img, 'sizes', sizes);
-    const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '');
-    return `<picture${pictureAttrs}>${avif}${webp}${img}</picture>`;
+    if (deferred) {
+      img = img.replace(/\s(?:src|srcset|sizes)=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    }
+    img = replaceAttribute(img, deferred ? 'data-src' : 'src', publicRelative(pagePath, fallback));
+    img = replaceAttribute(img, srcsetAttribute, webpSrcset);
+    img = replaceAttribute(img, sizesAttribute, sizes);
+    const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '').replace(/\s+data-defer(?:="[^"]*")?/i, '');
+    const noScriptImage = img.replace(/\sdata-(?:src|srcset|sizes)=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    const noScriptFallback = deferred ? `<noscript>${replaceAttribute(noScriptImage, 'src', publicRelative(pagePath, fallback))}</noscript>` : '';
+    return `<picture${pictureAttrs}>${avif}${webp}${img}${noScriptFallback}</picture>`;
   });
 }
 
@@ -183,7 +210,7 @@ async function minifyCssAndJs() {
   return { css: cssAsset.path, js: jsAsset.path };
 }
 
-async function buildHtml(responsive, mappings) {
+async function buildHtml(responsive, mappings, sharePath) {
   const pages = await sourcePages();
   const minifierMappings = new Map(mappings);
   for (const page of pages) {
@@ -193,6 +220,7 @@ async function buildHtml(responsive, mappings) {
     }
     html = rewritePicture(html, page, responsive);
     html = rewriteAssetAttributes(html, page, minifierMappings);
+    html = html.replaceAll('@@OG_IMAGE_URL@@', new URL(sharePath, SITE_URL).href);
     html = html.replaceAll('@@SITE_URL@@', SITE_URL);
     if (page !== '404.html') {
       const route = page === 'index.html' ? '' : page.replace(/\/index\.html$/, '/');
@@ -200,6 +228,7 @@ async function buildHtml(responsive, mappings) {
       html = html.replace('</head>', `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}"></head>`);
     }
     if (html.includes('@@')) throw new Error(`${page}: unresolved build placeholder`);
+    html = html.replace(/(<meta property="og:image" content="[^"]+">)/, '$1<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="A snowy island camp and its last fire">');
     const output = await minifyHtml(html, {
       collapseWhitespace: true,
       conservativeCollapse: false,
@@ -234,11 +263,11 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
   const responsive = await makeResponsiveImages();
-  const mappings = await buildStaticAssets(responsive);
+  const { mappings, share } = await buildStaticAssets(responsive);
   const { css, js } = await minifyCssAndJs();
   mappings.set('__styles__', css);
   mappings.set('__script__', js);
-  await buildHtml(responsive, mappings);
+  await buildHtml(responsive, mappings, share);
   await buildDiscoveryFiles();
   const totalBytes = await directoryBytes(DIST);
   console.log(`Built ${DIST} for ${SITE_URL}`);

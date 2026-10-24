@@ -65,6 +65,8 @@ class PageParser(html.parser.HTMLParser):
         self.candidate_urls: list[str] = []
         self.image_sizes: list[tuple[str, int]] = []
         self.image_count = 0
+        self.favicon_sizes: set[str] = set()
+        self.apple_icon_sizes: set[str] = set()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
@@ -78,6 +80,10 @@ class PageParser(html.parser.HTMLParser):
                 self.links.append((values["href"] or "", rel))
                 if rel == "stylesheet":
                     self.stylesheets.append(values["href"] or "")
+                if rel == "icon":
+                    self.favicon_sizes.update((values.get("sizes") or "").lower().split())
+                if rel == "apple-touch-icon":
+                    self.apple_icon_sizes.update((values.get("sizes") or "").lower().split())
         if tag == "script" and values.get("src"):
             self.scripts.append(values["src"] or "")
         if tag == "picture":
@@ -89,15 +95,15 @@ class PageParser(html.parser.HTMLParser):
                 if values.get("type"):
                     formats.add((values["type"] or "").lower())
                 candidates = record["candidates"]
-                if values.get("srcset"):
-                    parsed = srcset_urls(values["srcset"] or "")
+                if values.get("srcset") or values.get("data-srcset"):
+                    parsed = srcset_urls(values.get("srcset") or values.get("data-srcset") or "")
                     candidates.extend(parsed)
                     self.candidate_urls.extend(url for url, _ in parsed)
             elif values.get("src"):
                 self.resources.append(values["src"] or "")
         if tag == "img":
             self.image_count += 1
-            src = values.get("src") or ""
+            src = values.get("src") or values.get("data-src") or ""
             if values.get("alt") is None:
                 error("An image is missing alt text")
             if src:
@@ -105,10 +111,10 @@ class PageParser(html.parser.HTMLParser):
                 if self.picture_stack:
                     record = self.picture_stack[-1]
                     candidates = record["candidates"]
-                    parsed = srcset_urls(values.get("srcset") or "")
+                    parsed = srcset_urls(values.get("srcset") or values.get("data-srcset") or "")
                     candidates.extend(parsed)
                     self.candidate_urls.extend(url for url, _ in parsed)
-                    if not values.get("srcset"):
+                    if not values.get("srcset") and not values.get("data-srcset"):
                         candidates.append((src, 1))
                 else:
                     self.image_sizes.append((src, 1))
@@ -210,11 +216,20 @@ def main() -> int:
             continue
         parser = PageParser()
         try:
-            parser.feed(page.read_text(encoding="utf-8"))
+            source = page.read_text(encoding="utf-8")
+            parser.feed(source)
             parser.close()
         except (OSError, UnicodeError) as exc:
             error(f"Cannot parse {relative}: {exc}")
             continue
+        link_kinds = {kind for _, kind in parser.links}
+        for kind in {"icon", "apple-touch-icon"}:
+            if kind not in link_kinds:
+                error(f"Missing {kind} link in {relative}")
+        if not {"16x16", "32x32"}.issubset(parser.favicon_sizes):
+            error(f"Missing 16px or 32px PNG site icon in {relative}")
+        if "180x180" not in parser.apple_icon_sizes:
+            error(f"Missing 180px Apple touch icon in {relative}")
 
         page_weight = page.stat().st_size
         for url, kind in parser.links:
@@ -272,6 +287,9 @@ def main() -> int:
         for asset in (DIST / rel).glob("*"):
             if not re.search(r"-[0-9a-f]{12}\.", asset.name):
                 error(f"Built asset is not content-hashed: {asset.relative_to(DIST)}")
+
+    if not (DIST / "favicon.ico").is_file():
+        error("Root favicon.ico is missing")
 
     cname = (DIST / "CNAME").read_text(encoding="utf-8").strip()
     if cname != "ironvei-game.online":
