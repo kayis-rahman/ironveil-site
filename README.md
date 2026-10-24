@@ -1,6 +1,6 @@
 # Ironveil website
 
-A responsive, static site for GitHub Pages. Source pages are plain HTML and CSS with one small progressive-enhancement script; `npm run build` produces minified HTML/CSS/JS, content-hashed assets, and responsive AVIF/WebP image sets in `dist/`. The build uses a pinned Node version and lockfile. No runtime framework, external fonts, trackers, CDNs or third-party video embed are used.
+A responsive, static site for GitHub Pages. Source pages are plain HTML and CSS with one small progressive-enhancement script; `npm run build` produces minified HTML/CSS/JS, content-hashed assets, and responsive AVIF/WebP image sets in `dist/`. The build uses a pinned Node version and lockfile. No runtime framework, external fonts, CDNs or third-party video embed are used; optional Google Analytics loads only after visitor consent.
 
 ## Build and check locally
 
