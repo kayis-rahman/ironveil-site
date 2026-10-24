@@ -101,7 +101,7 @@ main { min-height: 65vh; }
 .stage-card figcaption strong { color: var(--ice); font: 700 1.25rem var(--serif); }
 
 .section-media { background: linear-gradient(180deg, #151a26, #211d2c); }
-.media-callout { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(26px, 5vw, 70px); padding: clamp(22px, 4vw, 46px); border: 1px solid #54505d; background: #1c202d; }
+.media-callout { display: grid; grid-template-columns: 1fr; align-items: center; gap: clamp(26px, 5vw, 70px); padding: clamp(22px, 4vw, 46px); border: 1px solid #54505d; background: #1c202d; }
 .media-callout p { margin-inline: 0; }
 .media-callout h2 { font-size: clamp(2.4rem, 5vw, 4.2rem); }
 .media-callout img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
