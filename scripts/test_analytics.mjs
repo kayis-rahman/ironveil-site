@@ -4,8 +4,12 @@ import vm from 'node:vm';
 
 const source = await readFile(new URL('./site.js', import.meta.url), 'utf8');
 
-function startPage(savedChoice) {
+function startPage(savedChoice, footerNavCount = 1) {
   const appended = [];
+  const footerNavs = Array.from({ length: footerNavCount }, () => ({
+    children: [],
+    append(element) { this.children.push(element); },
+  }));
   const listeners = {};
   const bannerListeners = {};
   const privacyLink = { href: 'https://example.test/ironveil-site/privacy/' };
@@ -21,14 +25,20 @@ function startPage(savedChoice) {
         tagName,
         hidden: false,
         setAttribute() {},
-        addEventListener(name, listener) { bannerListeners[name] = listener; },
+        addEventListener(name, listener) {
+          if (tagName === 'section') bannerListeners[name] = listener;
+        },
         querySelector() { return { focus() {} }; },
       };
     },
     querySelector(selector) {
-      return selector === '.site-footer nav a[href*="privacy"]' ? privacyLink : null;
+      if (selector === '.site-footer nav a[href*="privacy"]') return privacyLink;
+      if (selector === '.site-footer nav') return footerNavs[0] || null;
+      return null;
     },
-    querySelectorAll() { return []; },
+    querySelectorAll(selector) {
+      return selector === '.site-footer nav' ? footerNavs : [];
+    },
     addEventListener(name, listener) { listeners[name] = listener; },
   };
   const window = {
@@ -53,6 +63,7 @@ function startPage(savedChoice) {
     window,
     banner: appended.find((item) => item.tagName === 'section'),
     privacyLink,
+    footerNavs,
     clickConsent(value) {
       bannerListeners.click({
         target: { closest: () => ({ dataset: { consent: value } }) },
@@ -64,6 +75,16 @@ function startPage(savedChoice) {
 const undecided = startPage(null);
 assert.equal(undecided.banner.hidden, false, 'new visitors should see the consent prompt');
 assert.ok(undecided.banner.innerHTML.includes(`href="${undecided.privacyLink.href}"`), 'the banner reuses the footer privacy destination under a repository subpath');
+
+for (const footerNavCount of [1, 1, 1, 1, 1, 1, 2]) {
+  const page = startPage(null, footerNavCount);
+  const controls = page.footerNavs.map((nav) => nav.children.filter((child) => child.className === 'analytics-settings'));
+  assert.equal(controls.flat().length, 1, 'every page receives exactly one settings control');
+  assert.equal(controls[0][0].tagName, 'button', 'the settings control is a semantic keyboard-accessible button');
+  assert.equal(controls[0][0].type, 'button');
+  assert.equal(controls[0][0].textContent, 'Analytics settings', 'the settings control has an accessible name');
+  assert.ok(controls.slice(1).every((siblings) => siblings.length === 0), 'additional footer navigations remain unchanged');
+}
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'no GA script request is made before consent');
 undecided.clickConsent('rejected');
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'rejecting analytics makes no GA script request');

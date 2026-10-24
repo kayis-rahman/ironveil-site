@@ -102,7 +102,8 @@
     const button = event.target.closest('[data-consent]');
     if (button) remember(button.dataset.consent);
   });
-  for (const nav of document.querySelectorAll('.site-footer nav')) {
+  const footerNav = document.querySelector('.site-footer nav');
+  if (footerNav) {
     const settings = document.createElement('button');
     settings.type = 'button';
     settings.className = 'analytics-settings';
@@ -111,7 +112,7 @@
       banner.hidden = false;
       banner.querySelector('[data-consent="accepted"]').focus();
     });
-    nav.append(settings);
+    footerNav.append(settings);
   }
 
   if (GA4_MEASUREMENT_ID) {
