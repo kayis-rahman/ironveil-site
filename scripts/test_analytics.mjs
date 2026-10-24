@@ -46,6 +46,7 @@ function startPage(savedChoice) {
   vm.runInNewContext(source, context);
   return {
     appended,
+    window,
     banner: appended.find((item) => item.tagName === 'section'),
     clickConsent(value) {
       bannerListeners.click({
@@ -66,6 +67,14 @@ accepted.clickConsent('accepted');
 const gaScript = accepted.appended.find((item) => item.tagName === 'script');
 assert.ok(gaScript, 'accepting analytics loads the GA script');
 assert.equal(gaScript.src, 'https://www.googletagmanager.com/gtag/js?id=G-TVT4EJPXTV');
+accepted.clickConsent('rejected');
+accepted.clickConsent('accepted');
+const consentUpdates = Array.from(accepted.window.dataLayer)
+  .map((call) => Array.from(call))
+  .filter(([command, action]) => command === 'consent' && action === 'update')
+  .map(([, , settings]) => settings.analytics_storage);
+assert.deepEqual(consentUpdates, ['granted', 'denied', 'granted'], 're-accepting after rejection restores analytics consent');
+assert.equal(accepted.appended.filter((item) => item.tagName === 'script').length, 1, 're-accepting reuses the loaded GA script');
 
 const remembered = startPage('accepted');
 assert.ok(remembered.appended.some((item) => item.tagName === 'script'), 'a previously accepted choice loads GA on the next visit');
