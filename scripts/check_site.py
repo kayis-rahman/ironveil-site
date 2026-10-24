@@ -147,12 +147,10 @@ def check_alpha_links(parser: PageParser) -> None:
     issues = "https://github.com/kayis-rahman/ironveil-site/issues"
     if issues not in anchors:
         error("Support page is missing the public site issues contact link")
-    for url in anchors:
-        if urlsplit(url).scheme.lower() == "mailto":
-            error(
-                "Support page must not publish an email address until the owner "
-                f"supplies and confirms one: {url}"
-            )
+    if "mailto:support@ironvei-game.online?subject=Ironveil%20support%20request" not in anchors:
+        error("Support page is missing its support email link")
+    if "mailto:support@ironvei-game.online?subject=Ironveil%20privacy%20request" not in anchors:
+        error("Support page is missing its private privacy contact link")
 
     apple_help = "https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/"
     if apple_help not in anchors:
