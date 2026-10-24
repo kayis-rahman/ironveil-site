@@ -137,4 +137,59 @@
       if (store) sendEvent('store_click', { link_url: `${url.origin}${url.pathname}`, link_domain: host, link_type: store });
     });
   }
+  const story = document.querySelector('.last-fire-story');
+  const hydrate = (scene) => {
+    for (const asset of scene.querySelectorAll('[data-srcset], [data-src]')) {
+      for (const attribute of ['srcset', 'src', 'sizes']) {
+        const deferred = asset.getAttribute(`data-${attribute}`);
+        if (deferred) {
+          asset.setAttribute(attribute, deferred);
+          asset.removeAttribute(`data-${attribute}`);
+        }
+      }
+    }
+  };
+  if (story && !('IntersectionObserver' in window)) {
+    for (const scene of story.querySelectorAll('.story-scene')) hydrate(scene);
+  }
+  if (story && 'IntersectionObserver' in window) {
+    const scenes = [...story.querySelectorAll('.story-scene')];
+    const steps = [...story.querySelectorAll('[data-step]')];
+    let activeIndex = 0;
+    let parallaxFrame = 0;
+    document.documentElement.classList.add('js');
+    const activate = (index, prefetchNext = false) => {
+      activeIndex = index;
+      for (const [sceneIndex, scene] of scenes.entries()) {
+        const active = sceneIndex === index;
+        scene.classList.toggle('is-active', active);
+        scene.setAttribute('aria-hidden', String(!active));
+        const shouldLoad = active || (prefetchNext && sceneIndex === index + 1);
+        if (shouldLoad) {
+          const image = scene.querySelector('img');
+          if (image) image.loading = 'eager';
+          hydrate(scene);
+        }
+      }
+      story.style.setProperty('--story-progress', `${((index + 1) / scenes.length) * 100}%`);
+    };
+    activate(0);
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) if (entry.isIntersecting) activate(Number(entry.target.dataset.step), true);
+    }, { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
+    for (const step of steps) observer.observe(step);
+    window.addEventListener('scroll', () => {
+      if (reduceMotion.matches || parallaxFrame) return;
+      parallaxFrame = requestAnimationFrame(() => {
+        parallaxFrame = 0;
+        const bounds = steps[activeIndex]?.getBoundingClientRect();
+        const image = scenes[activeIndex]?.querySelector('picture img');
+        if (!bounds || !image) return;
+        const offset = Math.max(-1, Math.min(1, (innerHeight / 2 - (bounds.top + bounds.height / 2)) / innerHeight));
+        image.style.setProperty('--drift-x', `${offset * -0.45}%`);
+        image.style.setProperty('--drift-y', `${offset * 0.65}%`);
+      });
+    }, { passive: true });
+  }
+
 })();
