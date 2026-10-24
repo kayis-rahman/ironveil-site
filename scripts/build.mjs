@@ -9,8 +9,7 @@ import { minify as minifyJs } from 'terser';
 const ROOT = process.cwd();
 const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
-const WIDTHS = [360, 640, 960, 1280];
-const STORY_WIDTHS = [640, 1280, 1920, 2560, 3840];
+const RESPONSIVE_WIDTHS = [640, 1280, 1920, 2560, 3840];
 const IMAGE_BUDGET = 500 * 1024;
 const DISPLAY_NAMES = {
   scout: 'Sunoracle',
@@ -95,13 +94,11 @@ async function makeResponsiveImages() {
     const base = path.basename(sourcePath, path.extname(sourcePath)).replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
     const candidates = [];
     const isStory = /^assets\/source\/story\/\d+\.webp$/.test(sourcePath);
-    const widths = isStory ? STORY_WIDTHS : WIDTHS;
-    for (const requestedWidth of widths) {
-      const width = isStory ? requestedWidth : Math.min(requestedWidth, metadata.width);
+    for (const width of RESPONSIVE_WIDTHS) {
       if (candidates.some((item) => item.width === width)) continue;
       const makeImage = () => {
-        let image = sharp(fullSource).rotate().resize({ width, withoutEnlargement: !isStory, kernel: 'lanczos3' });
-        if (isStory && width > metadata.width) image = image.sharpen(0.35, 0.7, 1.0);
+        let image = sharp(fullSource).rotate().resize({ width, kernel: 'lanczos3' });
+        if (width > metadata.width) image = image.sharpen(0.35, 0.7, 1.0);
         return image;
       };
       const avifBytes = await makeImage().avif({ quality: isStory ? 58 : 50, effort: 5 }).toBuffer();
