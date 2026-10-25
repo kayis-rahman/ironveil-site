@@ -146,7 +146,7 @@ async function buildStaticAssets(responsive) {
   mappings.set('assets/brand/favicon.ico', 'favicon.ico');
   mappings.set('favicon.ico', 'favicon.ico');
   const shareSource = path.join(ROOT, 'assets/source/hero/snowy-island-campfire.webp');
-  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 70, mozjpeg: true }).toBuffer();
   await verifyMetadataStripped(shareBytes, 'social share image');
   const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
   mappings.set('assets/brand/share.png', share.path);

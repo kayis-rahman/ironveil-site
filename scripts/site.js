@@ -2,6 +2,50 @@
   const GA4_MEASUREMENT_ID = 'G-TVT4EJPXTV';
   const CONSENT_KEY = 'ironveil-analytics-consent';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Join links: clearly named placeholders. Set a URL (or remove `null`) to publish it.
+  // "link pending" entries are intentionally not wired to a destination yet.
+  const BETA_LIVE = false; // one-line switch: flip to true once a build passes Beta App Review
+  const ALPHA_TESTFLIGHT_URL = 'support/#alpha'; // invite-only request flow (see support page)
+  const ALPHA_ANDROID_URL = null; // LINK PENDING: Google Play internal testing (alpha)
+  const BETA_TESTFLIGHT_URL = 'https://testflight.apple.com/join/7GZzaDmd'; // gated by BETA_LIVE
+  const BETA_ANDROID_URL = null; // LINK PENDING: Google Play closed testing (beta)
+
+  const THEME_KEY = 'ironveil-theme';
+  const themeToggle = document.querySelector('[data-theme-toggle]');
+  if (themeToggle && document.documentElement.setAttribute) {
+    const paintTheme = (value) => {
+      document.documentElement.setAttribute('data-theme', value);
+      const label = themeToggle.querySelector('[data-theme-label]');
+      if (label) label.textContent = value === 'dark' ? 'Dark' : 'Light';
+      themeToggle.setAttribute('aria-label', `Switch to ${value === 'dark' ? 'light' : 'dark'} theme`);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', value === 'dark' ? '#0b0e15' : '#f4f0e6');
+    };
+    paintTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    themeToggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      paintTheme(next);
+      try { localStorage.setItem(THEME_KEY, next); } catch { /* Theme choice stays for this page only. */ }
+    });
+  }
+
+  // Upgrade the gated beta TestFlight link when BETA_LIVE is true.
+  const betaLink = document.querySelector('[data-beta-link]');
+  if (betaLink) {
+    if (BETA_LIVE) {
+      const anchor = document.createElement('a');
+      anchor.className = betaLink.className.replace(/\bis-pending\b/g, '').trim();
+      anchor.href = BETA_TESTFLIGHT_URL;
+      anchor.textContent = 'iPhone / iPad (TestFlight)';
+      anchor.rel = 'noopener noreferrer';
+      betaLink.replaceWith(anchor);
+    } else {
+      betaLink.textContent = 'iPhone / iPad (TestFlight) · coming soon';
+      betaLink.setAttribute('aria-disabled', 'true');
+    }
+  }
+
   if (!reduceMotion.matches && 'IntersectionObserver' in window) {
     const targets = document.querySelectorAll('.reveal');
     if (targets.length) {
