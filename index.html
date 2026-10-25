@@ -16,7 +16,7 @@
   <link rel="icon" href="assets/brand/ironveil-16.png" sizes="16x16" type="image/png">
   <link rel="icon" href="assets/brand/ironveil-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/ironveil-180.png" sizes="180x180">
-  <link rel="stylesheet" href="styles.css">
+  <script>try{var t=localStorage.getItem("ironveil-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script><link rel="stylesheet" href="styles.css">
   <script defer src="scripts/site.js"></script>
 </head>
 <body>
@@ -28,7 +28,7 @@
         <a href="#how">The story</a>
         <a href="#island">The island</a>
         <a href="release/">Availability</a>
-      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme"><svg class="theme-icon theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><svg class="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8z"/></svg><span data-theme-label>Dark</span></button></nav>
     </div>
   </header>
   <main id="main">
@@ -43,10 +43,9 @@
         <p class="lead">One ember holds the island between darkness and dawn. Beyond the storm, a new path waits.</p>
         <div class="actions">
           <a class="button" href="#how">Follow the trail <span aria-hidden="true">↓</span></a>
-          <a class="button button-quiet" href="release/">App Store · not available yet</a>
-          <a class="button button-quiet" href="release/">Google Play · not available yet</a>
-          <a class="button button-quiet" href="support/#alpha">Request invite-only alpha access</a>
+          <a class="button button-quiet" href="release/">Release status</a>
         </div>
+        <p class="alpha-link"><a class="text-link" href="support/#alpha">Request invite-only alpha access <span aria-hidden="true">↗</span></a></p>
       </div>
       <span class="opening-caption">First light · the fire still burns</span>
       <a class="scroll-cue" href="#how" aria-label="Scroll to the story"><span aria-hidden="true">↓</span></a>
@@ -126,6 +125,20 @@
           <h2>Make a home in the storm.</h2>
           <p>Ironveil is an offline game against a rival bot. Gather, shelter and manage warmth as the island shifts through the seasons. Save a match on this device and return to it later.</p>
         </div>
+        <div class="island-grid reveal">
+          <figure class="stage-card">
+            <picture data-image="assets/source/gameplay/island.webp" data-sizes="(max-width:760px) 100vw, 33vw"><source type="image/avif"><source type="image/webp"><img src="assets/source/gameplay/island.webp" width="1000" height="625" alt="Early-build Ironveil gameplay: the survivor's camp on the island" loading="lazy" decoding="async"></picture>
+            <figcaption><strong>Outlast the seasons</strong>Gather, shelter and manage warmth as the island shifts through the seasons.</figcaption>
+          </figure>
+          <figure class="stage-card">
+            <picture data-image="assets/source/gameplay/winter-island.webp" data-sizes="(max-width:760px) 100vw, 33vw"><source type="image/avif"><source type="image/webp"><img src="assets/source/gameplay/winter-island.webp" width="1000" height="625" alt="Early-build Ironveil gameplay: the winter island under snow" loading="lazy" decoding="async"></picture>
+            <figcaption><strong>Play the rival bot</strong>An offline bot shares the island, turn by turn. No online match needed.</figcaption>
+          </figure>
+          <figure class="stage-card">
+            <picture data-image="assets/source/gameplay/deity-select.webp" data-sizes="(max-width:760px) 100vw, 33vw"><source type="image/avif"><source type="image/webp"><img src="assets/source/gameplay/deity-select.webp" width="1000" height="625" alt="Early-build Ironveil gameplay: the deity select screen" loading="lazy" decoding="async"></picture>
+            <figcaption><strong>Choose a god and a rival</strong>Each god can use one power per turn without ending the turn.</figcaption>
+          </figure>
+        </div>
         <p class="section-link"><a class="text-link" href="how-to-play/">Read the field guide <span aria-hidden="true">↗</span></a></p>
       </div>
     </section>
@@ -136,12 +149,6 @@
       </div>
     </section>
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <span>© 2026 Kayis Rahman · Ironveil is in development.</span>
-      <nav aria-label="Footer"><a href="privacy/">Privacy</a><a href="support/">Support</a><a href="demo/">Demo &amp; media</a></nav>
-      <nav aria-label="Contact and social links"><a href="mailto:info@ironvei-game.online?subject=Ironveil%20general%20enquiry">General enquiries</a><a href="mailto:social@ironvei-game.online?subject=Ironveil%20press%20and%20social">Press and social</a><a href="https://discord.gg/VcYsrFek" target="_blank" rel="noopener noreferrer">Discord</a><a href="https://www.instagram.com/apricotz.inc/" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on Instagram">Instagram</a><a href="https://x.com/apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on X">X</a><a href="https://www.tiktok.com/@apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on TikTok">TikTok</a></nav>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="wrap"><div class="footer-main"><div class="footer-brand"><a class="brand" href="index.html" aria-label="Ironveil home"><span class="brand-mark" aria-hidden="true">I</span><span>IRON<span class="brand-veil">VEIL</span></span></a><p>An offline Norse survival strategy game. One island, one winter, one fire.</p></div><nav class="footer-cols" aria-label="Footer"><div class="footer-col"><h4>The game</h4><ul><li><a href="index.html#how">The story</a></li><li><a href="index.html#island">The island</a></li><li><a href="how-to-play/">How to play</a></li><li><a href="release/">Availability</a></li></ul></div><div class="footer-col"><h4>Help</h4><ul><li><a href="support/">Support</a></li><li><a href="privacy/">Privacy</a></li><li><a href="demo/">Demo &amp; media</a></li><li><a href="mailto:info@ironvei-game.online?subject=Ironveil%20general%20enquiry">General enquiries</a></li></ul></div><div class="footer-col"><h4>Follow</h4><ul><li><a href="https://discord.gg/VcYsrFek" target="_blank" rel="noopener noreferrer">Discord</a></li><li><a href="https://www.instagram.com/apricotz.inc/" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on Instagram">Instagram</a></li><li><a href="https://x.com/apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on X">X</a></li><li><a href="https://www.tiktok.com/@apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on TikTok">TikTok</a></li><li><a href="mailto:social@ironvei-game.online?subject=Ironveil%20press%20and%20social">Press and social</a></li></ul></div></nav></div><div class="footer-bottom"><span>© 2026 Kayis Rahman · Ironveil is in development.</span><span>In development &middot; not yet released</span></div></div></footer>
 </body>
 </html>

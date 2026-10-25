@@ -18,4 +18,4 @@ Open `http://localhost:8000`. The build strips image metadata and checks respons
 
 See [docs/deploy.md](docs/deploy.md) for GitHub Pages setup, publishing behavior and deployment prerequisites. Pending owner facts are tracked in [TODO-OWNER.md](TODO-OWNER.md). Internal links are relative, so the site works from the repository subpath and a later custom domain without a build-time base-path rewrite.
 
-The site states that no playable browser demo or store release is available. The landing page presents the approved cinematic story frames; gameplay captures are temporarily withheld while their artwork is updated for the game rename and will return after it ships.
+The site states that no playable browser demo or store release is available. The landing page presents approved cinematic story frames alongside early-build gameplay captures; see [docs/fact-sources.md](docs/fact-sources.md) for art status.

@@ -2,6 +2,26 @@
   const GA4_MEASUREMENT_ID = 'G-TVT4EJPXTV';
   const CONSENT_KEY = 'ironveil-analytics-consent';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const THEME_KEY = 'ironveil-theme';
+  const themeToggle = document.querySelector('[data-theme-toggle]');
+  if (themeToggle && document.documentElement.setAttribute) {
+    const paintTheme = (value) => {
+      document.documentElement.setAttribute('data-theme', value);
+      const label = themeToggle.querySelector('[data-theme-label]');
+      if (label) label.textContent = value === 'dark' ? 'Dark' : 'Light';
+      themeToggle.setAttribute('aria-label', `Switch to ${value === 'dark' ? 'light' : 'dark'} theme`);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', value === 'dark' ? '#0b0e15' : '#f4f0e6');
+    };
+    paintTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    themeToggle.addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      paintTheme(next);
+      try { localStorage.setItem(THEME_KEY, next); } catch { /* Theme choice stays for this page only. */ }
+    });
+  }
+
   if (!reduceMotion.matches && 'IntersectionObserver' in window) {
     const targets = document.querySelectorAll('.reveal');
     if (targets.length) {
