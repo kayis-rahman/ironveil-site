@@ -118,65 +118,13 @@ main { min-height: 65vh; }
 .footer-main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.4fr); gap: clamp(22px, 4vw, 54px); padding-block: clamp(38px, 6vw, 64px); }
 .footer-brand .brand { font-size: .95rem; }
 .footer-brand p { margin: 16px 0 0; color: var(--muted); font-size: .87rem; max-width: 34ch; }
-.footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(18px, 3vw, 44px); min-width: 0; }
+.footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 44px); min-width: 0; }
 .footer-col h4 { margin: 0 0 14px; color: var(--gold); font-size: .7rem; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
 .footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .footer-col a { color: var(--muted); font-size: .88rem; text-decoration: none; }
 .footer-col a:hover { color: var(--gold); }
 .footer-cols .analytics-settings { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
 .footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-block: 18px; border-top: 1px solid #4b4753; color: var(--muted); font-size: .78rem; }
-.join-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 34px; max-width: 760px; }
-.join-card { padding: 20px; border: 1px solid var(--line, #4b4753); background: #12151f; }
-.join-title { margin: 0 0 4px; font-family: var(--serif, Georgia, serif); font-size: 1.35rem; color: var(--ice, #e7e8e4); }
-.join-note { margin: 0 0 14px; color: var(--muted, #b9bcc6); font-size: .82rem; }
-.join-links { display: flex; flex-wrap: wrap; gap: 10px; }
-.is-pending { opacity: .55; cursor: not-allowed; text-decoration: none; }
-.footer-pending { color: var(--muted); font-size: .88rem; opacity: .7; }
-@media (max-width: 760px) { .join-group { grid-template-columns: 1fr; } }
-.theme-toggle { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 7px 14px; border: 1px solid rgba(231, 232, 228, .35); border-radius: 999px; background: transparent; color: var(--ice); font: 700 .72rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
-.theme-toggle:hover { border-color: var(--gold); color: var(--gold); }
-.theme-toggle .theme-icon { display: none; }
-html:not([data-theme="light"]) .theme-icon-sun,
-html[data-theme="light"] .theme-icon-moon { display: inline; }
-
-.page-hero { position: relative; isolation: isolate; padding: 160px 0 64px; border-bottom: 1px solid #544a5b; background: linear-gradient(105deg, #191725, #30243c 65%, #1a1c2c); }
-.page-hero::after { content: ""; position: absolute; z-index: -1; inset: auto 0 0; height: 90px; background: linear-gradient(transparent, var(--night)); opacity: .65; }
-.page-title { max-width: 850px; margin: 14px 0 20px; font-size: clamp(3rem, 7vw, 6.5rem); }
-.page-hero p:not(.eyebrow) { max-width: 720px; color: #d0d0d5; font-size: 1.1rem; }
-.prose { max-width: 800px; }
-.prose h2 { margin: 2.1em 0 .55em; font: 700 clamp(1.8rem, 3.6vw, 2.6rem)/1.1 var(--serif); }
-.prose h3 { margin: 1.5em 0 .45em; font: 700 1.35rem/1.2 var(--serif); }
-.prose p, .prose li { color: #d0d3d9; }
-.prose li { padding: .18em 0; }
-.prose strong { color: var(--ice); }
-.prose a { color: var(--gold); }
-.prose picture { margin: 28px 0; }
-.prose picture img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
-.callout { margin: 28px 0; padding: 19px 22px; border-left: 3px solid var(--gold); background: #1b202c; }
-.callout p { margin: 0; }
-.tag { display: inline-flex; padding: 4px 11px; border: 1px solid #b6a77f; border-radius: 99px; color: #eee4cd; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
-.feature { padding: clamp(22px, 4vw, 42px); border: 1px solid #5c5362; background: linear-gradient(120deg, #211d2c, #191b29); }
-.feature h2 { margin: 17px 0 12px; font: 700 clamp(2.2rem, 4.2vw, 3.5rem)/1.05 var(--serif); }
-.feature .actions { margin-top: 20px; }
-.feature .button[aria-disabled="true"] { opacity: .62; cursor: not-allowed; }
-.faq details { padding: 18px 0; border-bottom: 1px solid var(--line); }
-.faq summary { cursor: pointer; font-weight: 750; }
-.faq details p { max-width: 720px; color: var(--muted); }
-.placeholder { padding: 19px 21px; border: 1px dashed #89818f; border-radius: 3px; color: #e0dfe2; background: #1a1c29; }
-.media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 32px; }
-.media-grid figure { margin: 0; padding: 10px; border: 1px solid #514a5a; background: #191b29; }
-.media-grid img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
-.media-grid figcaption { padding: 8px 2px 0; color: var(--muted); font-size: .78rem; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.reveal { opacity: 1; transform: none; }
-.motion-ready .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
-.motion-ready .reveal.in-view { opacity: 1; transform: none; }
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .hero-art { transition: filter 1s ease; }
-  .hero:hover .hero-art { filter: saturate(1.12); }
-  .button { transition: transform .2s ease, background-color .2s ease; }
-}
 
 @media (max-width: 760px) {
   .header-inner { min-height: 78px; padding: 11px 20px; align-items: flex-start; flex-direction: column; gap: 7px; }
@@ -362,13 +310,6 @@ html[data-theme="light"] .site-footer {
   color: #3d3945;
 }
 html[data-theme="light"] .footer-bottom { border-top-color: #cfc6b4; }
-html[data-theme="light"] .join-card { background: #fbf8f1; border-color: #cfc6b4; }
-html[data-theme="light"] .join-title { color: #1d1b22; }
-html[data-theme="light"] .is-pending { opacity: .5; }
-html[data-theme="light"] .page-hero {
-  border-bottom-color: #d5cdd8;
-  background: linear-gradient(105deg, #e9e4f1, #f4f0e6 65%, #e6e9f2);
-}
 html[data-theme="light"] .page-hero::after { background: linear-gradient(transparent, #f4f0e6); }
 html[data-theme="light"] .page-hero p:not(.eyebrow) { color: #403b4b; }
 html[data-theme="light"] .prose p,
