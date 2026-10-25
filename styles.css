@@ -136,10 +136,15 @@ main { min-height: 65vh; }
 .prose picture img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
 .callout { margin: 28px 0; padding: 19px 22px; border-left: 3px solid var(--gold); background: #1b202c; }
 .callout p { margin: 0; }
+.tag { display: inline-flex; padding: 4px 11px; border: 1px solid #b6a77f; border-radius: 99px; color: #eee4cd; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
 .feature { padding: clamp(22px, 4vw, 42px); border: 1px solid #5c5362; background: linear-gradient(120deg, #211d2c, #191b29); }
 .feature h2 { margin: 17px 0 12px; font: 700 clamp(2.2rem, 4.2vw, 3.5rem)/1.05 var(--serif); }
 .feature .actions { margin-top: 20px; }
 .feature .button[aria-disabled="true"] { opacity: .62; cursor: not-allowed; }
+.faq details { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; font-weight: 750; }
+.faq details p { max-width: 720px; color: var(--muted); }
+.placeholder { padding: 19px 21px; border: 1px dashed #89818f; border-radius: 3px; color: #e0dfe2; background: #1a1c29; }
 .footer-main { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.4fr); gap: clamp(22px, 4vw, 54px); padding-block: clamp(38px, 6vw, 64px); }
 .footer-brand .brand { font-size: .95rem; }
 .footer-brand p { margin: 16px 0 0; color: var(--muted); font-size: .87rem; max-width: 34ch; }
