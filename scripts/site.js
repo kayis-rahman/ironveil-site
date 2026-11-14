@@ -9,7 +9,9 @@
     const paintTheme = (value) => {
       document.documentElement.setAttribute('data-theme', value);
       const label = themeToggle.querySelector('[data-theme-label]');
-      if (label) label.textContent = value === 'dark' ? 'Dark' : 'Light';
+      // Visible label names the action (the theme you switch to), matching the
+      // sun/moon icons and the aria-label; the button showed the current state.
+      if (label) label.textContent = value === 'dark' ? 'Light' : 'Dark';
       themeToggle.setAttribute('aria-label', `Switch to ${value === 'dark' ? 'light' : 'dark'} theme`);
       const meta = document.querySelector('meta[name="theme-color"]');
       if (meta) meta.setAttribute('content', value === 'dark' ? '#0b0e15' : '#f4f0e6');
@@ -108,7 +110,7 @@
   }
 
   const style = document.createElement('style');
-  style.textContent = '.analytics-consent{position:fixed;z-index:20;inset:auto 16px 16px auto;width:min(440px,calc(100vw - 32px));padding:18px;background:#171a29;color:#e7e8e4;border:1px solid #eac26c;box-shadow:0 8px 32px #0009;font:15px/1.5 system-ui,sans-serif}.analytics-consent[hidden]{display:none}.analytics-consent p{margin:0 0 12px}.analytics-consent a{color:#eac26c}.analytics-consent button{min-height:40px;margin:4px 8px 0 0;padding:8px 13px;border:1px solid #eac26c;border-radius:20px;background:#eac26c;color:#201c25;font:700 14px system-ui,sans-serif;cursor:pointer}.analytics-consent button.secondary{background:transparent;color:#e7e8e4}.analytics-settings{border:0;background:none;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}.analytics-settings:focus-visible,.analytics-consent button:focus-visible{outline:3px solid #eac26c;outline-offset:3px}';
+  style.textContent = '.analytics-consent{position:fixed;z-index:20;inset:auto 16px 16px auto;width:min(440px,calc(100vw - 32px));padding:18px;background:#171a29;color:#e7e8e4;border:1px solid #eac26c;box-shadow:0 8px 32px #0009;font:15px/1.5 system-ui,sans-serif}.analytics-consent[hidden]{display:none}.analytics-consent p{margin:0 0 12px}.analytics-consent a{color:#eac26c}.analytics-consent button{min-height:44px;margin:4px 8px 0 0;padding:8px 13px;border:1px solid #eac26c;border-radius:20px;background:#eac26c;color:#201c25;font:700 14px system-ui,sans-serif;cursor:pointer}.analytics-consent button.secondary{background:transparent;color:#e7e8e4}.analytics-settings{border:0;background:none;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;min-height:44px}.analytics-settings:focus-visible,.analytics-consent button:focus-visible{outline:3px solid #eac26c;outline-offset:3px}@media (max-width:760px){.analytics-consent{padding:14px 15px;font-size:14px}}';
   document.head.append(style);
   const banner = document.createElement('section');
   banner.className = 'analytics-consent';
@@ -118,9 +120,10 @@
   const privacyUrl = document.querySelector('.site-footer nav a[href*="privacy"]').href;
   banner.innerHTML = '<p id="analytics-consent-description">Allow optional Google Analytics to measure visits and store links? Analytics stays off unless you accept. <a href="' + privacyUrl + '">Privacy details</a>.</p><button type="button" data-consent="accepted">Accept analytics</button><button type="button" class="secondary" data-consent="rejected">Reject</button>';
   document.body.append(banner);
+  const syncBanner = () => document.body.classList.toggle('consent-banner', !banner.hidden);
   banner.addEventListener('click', (event) => {
     const button = event.target.closest('[data-consent]');
-    if (button) remember(button.dataset.consent);
+    if (button) { remember(button.dataset.consent); syncBanner(); }
   });
   const footerNav = document.querySelector('.site-footer nav');
   if (footerNav) {
@@ -130,6 +133,7 @@
     settings.textContent = 'Analytics settings';
     settings.addEventListener('click', () => {
       banner.hidden = false;
+      syncBanner();
       banner.querySelector('[data-consent="accepted"]').focus();
     });
     footerNav.append(settings);
@@ -142,6 +146,7 @@
     } else if (choice() !== 'rejected') {
       banner.hidden = false;
     }
+    syncBanner();
   }
 
   if (GA4_MEASUREMENT_ID) {

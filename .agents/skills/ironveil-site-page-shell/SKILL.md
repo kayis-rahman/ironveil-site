@@ -1,11 +1,11 @@
 ---
 name: ironveil-site-page-shell
-description: Use before editing any route under the seven page inventory, or changing head metadata, navigation, footer, theme toggle, or relative asset paths.
+description: Use before editing any route under the eight page inventory, or changing head metadata, navigation, footer, theme toggle, or relative asset paths.
 ---
 
 # Ironveil site page shell
 
-Trigger: before editing any route under the seven page inventory, or changing head metadata, navigation, footer, theme toggle, or relative asset paths.
+Trigger: before editing any route under the eight page inventory, or changing head metadata, navigation, footer, theme toggle, or relative asset paths.
 
 Scope: route inventory, relative-path conventions, shared header/nav/footer template, theme bootstrap ordering, favicon link set, page budget.
 

@@ -8,7 +8,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Support — Ironveil">
   <meta property="og:description" content="Contact Apricotz support for Ironveil help, bug reports and privacy requests.">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="@@OG_IMAGE_URL@@"><meta property="og:image" content="@@OG_IMAGE_URL@@">
   <title>Support — Ironveil</title>
   <link rel="icon" href="../favicon.ico" sizes="any">
   <link rel="icon" href="../assets/brand/ironveil-16.png" sizes="16x16" type="image/png">
@@ -21,10 +21,10 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="../index.html" aria-label="Ironveil home"><span class="brand-mark">I</span><span>IRONVEIL</span></a>
+      <a class="brand" href="../index.html" aria-label="Ironveil home"><picture class="brand-wordmark-dark brand-wordmark" data-image="../assets/source/brand/wordmark-dark.svg" data-sizes="110px"><source type="image/avif"><source type="image/webp"><img src="../assets/source/brand/wordmark-dark.svg" width="978" height="270" alt="" decoding="async"></picture><picture class="brand-wordmark-light brand-wordmark" data-image="../assets/source/brand/wordmark.svg" data-sizes="110px"><source type="image/avif"><source type="image/webp"><img src="../assets/source/brand/wordmark.svg" width="978" height="270" alt="" decoding="async"></picture></a>
       <nav class="nav" aria-label="Main navigation">
         <a href="../how-to-play/">How to play</a><a href="../demo/">Demo &amp; media</a><a href="../release/">Release</a><a href="../privacy/">Privacy</a><a aria-current="page" href="./">Support</a>
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme"><svg class="theme-icon theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><svg class="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8z"/></svg><span data-theme-label>Dark</span></button></nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme"><svg class="theme-icon theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><svg class="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8z"/></svg><span data-theme-label>Light</span></button></nav>
     </div>
   </header>
   <main id="main">
@@ -37,12 +37,22 @@
     </section>
     <section class="section" id="alpha">
       <div class="wrap">
+        <div class="alpha-grid">
         <div class="feature">
           <span class="tag">Invite-only · Internal TestFlight</span>
           <h2>Join the Ironveil Alpha</h2>
           <p>The current alpha is invite-only through Apple TestFlight. To request access, open an issue through the support channel below asking for alpha access; if approved, you’ll be added as an internal tester in App Store Connect and receive an Apple TestFlight invitation. There is no public TestFlight link at this time.</p>
           <div class="actions"><a class="button" href="https://github.com/kayis-rahman/ironveil-site/issues">Request alpha access via an issue</a></div>
           <p>Learn how <a href="https://developer.apple.com/help/app-store-connect/test-a-beta-version/add-internal-testers/" target="_blank" rel="noopener noreferrer">Apple internal testers work in App Store Connect</a>.</p>
+        </div>
+      
+        <div class="feature">
+          <span class="tag">Invite-only · Android internal test</span>
+          <h2>Join the Android internal test</h2>
+          <p>Android alpha runs as an invitation-only internal test on Google Play. If you have been invited, open the link and join as a tester. To request access, open an issue through the support channels on this page; there is no public Play listing yet.</p>
+          <div class="actions"><a class="button" href="https://play.google.com/apps/internaltest/4700768837020381782" target="_blank" rel="noopener noreferrer">Android internal test, invitation only</a></div>
+        </div>
+      
         </div>
       </div>
     </section>
@@ -59,7 +69,7 @@
           <h2>Frequently asked questions</h2>
           <details><summary>Can I play offline?</summary><p>The offline game is designed to run without an account or internet connection. Separate online service code is not part of the approved offline MVP.</p></details>
           <details><summary>Do I need an account?</summary><p>Not for offline play. The repository contains a separate online account path; online access is not offered as part of the current offline release plan.</p></details>
-          <details><summary>Does the game have ads or purchases?</summary><p>The offline MVP has no ads or in-app purchases. No purchase code or SDK was found in the game repository.</p></details>
+          <details><summary>Does the game have ads or purchases?</summary><p>The current builds have no ads or in-app purchases, and no purchase code or SDK exists in the game repository. This has not been verified against a final store build.</p></details>
           <details><summary>What does Ironveil cost?</summary><p>No price has been announced. That does not mean the game will be free.</p></details>
           <details><summary>Where can I download Ironveil?</summary><p>Ironveil is in development; no public store download is available. Check the <a href="../release/">Release page</a> for status.</p></details>
           <details><summary>How can I report a bug safely?</summary><p>Use the GitHub Issues link above for non-sensitive reports. Describe the problem without sharing credentials or sensitive personal information. For privacy requests, do not use a public issue; email <a href="mailto:support@ironvei-game.online?subject=Ironveil%20privacy%20request">support@ironvei-game.online</a>.</p></details>
@@ -67,6 +77,6 @@
       </div>
     </section>
   </main>
-  <footer class="site-footer"><div class="wrap"><div class="footer-main"><div class="footer-brand"><a class="brand" href="../index.html" aria-label="Ironveil home"><span class="brand-mark" aria-hidden="true">I</span><span>IRON<span class="brand-veil">VEIL</span></span></a><p>An offline Norse survival strategy game. One island, one winter, one fire.</p></div><nav class="footer-cols" aria-label="Footer"><div class="footer-col"><h4>The game</h4><ul><li><a href="../index.html#how">The story</a></li><li><a href="../index.html#island">The island</a></li><li><a href="../how-to-play/">How to play</a></li><li><a href="../release/">Availability</a></li></ul></div><div class="footer-col"><h4>Help</h4><ul><li><a href="../support/">Support</a></li><li><a href="../privacy/">Privacy</a></li><li><a href="../demo/">Demo &amp; media</a></li><li><a href="mailto:info@ironvei-game.online?subject=Ironveil%20general%20enquiry">General enquiries</a></li></ul></div><div class="footer-col"><h4>Follow</h4><ul><li><a href="https://discord.gg/VcYsrFek" target="_blank" rel="noopener noreferrer">Discord</a></li><li><a href="https://www.instagram.com/apricotz.inc/" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on Instagram">Instagram</a></li><li><a href="https://x.com/apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on X">X</a></li><li><a href="https://www.tiktok.com/@apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on TikTok">TikTok</a></li><li><a href="mailto:social@ironvei-game.online?subject=Ironveil%20press%20and%20social">Press and social</a></li></ul></div></nav></div><div class="footer-bottom"><span>© 2026 Kayis Rahman · Ironveil is in development.</span><span>In development &middot; not yet released</span></div></div></footer>
+  <footer class="site-footer"><div class="wrap"><div class="footer-main"><div class="footer-brand"><a class="brand" href="../index.html" aria-label="Ironveil home"><picture class="brand-wordmark-dark brand-wordmark" data-image="../assets/source/brand/wordmark-dark.svg" data-sizes="110px"><source type="image/avif"><source type="image/webp"><img src="../assets/source/brand/wordmark-dark.svg" width="978" height="270" alt="" decoding="async"></picture><picture class="brand-wordmark-light brand-wordmark" data-image="../assets/source/brand/wordmark.svg" data-sizes="110px"><source type="image/avif"><source type="image/webp"><img src="../assets/source/brand/wordmark.svg" width="978" height="270" alt="" decoding="async"></picture></a><p>An offline Norse survival strategy game. One island, one winter, one fire.</p></div><nav class="footer-cols" aria-label="Footer"><div class="footer-col"><h4>The game</h4><ul><li><a href="../index.html#how">The story</a></li><li><a href="../index.html#island">The island</a></li><li><a href="../how-to-play/">How to play</a></li><li><a href="../release/">Availability</a></li></ul></div><div class="footer-col"><h4>Help</h4><ul><li><a href="../support/">Support</a></li><li><a href="../privacy/">Privacy</a></li><li><a href="../demo/">Demo &amp; media</a></li><li><a href="../press/">Press kit</a></li><li><a href="mailto:info@ironvei-game.online?subject=Ironveil%20general%20enquiry">General enquiries</a></li></ul></div><div class="footer-col"><h4>Follow</h4><ul><li><a href="https://discord.gg/h8eemdpQ5e" target="_blank" rel="noopener noreferrer">Discord</a></li><li><a href="https://www.instagram.com/apricotz.inc/" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on Instagram">Instagram</a></li><li><a href="https://x.com/apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on X">X</a></li><li><a href="https://www.tiktok.com/@apricotzinc" target="_blank" rel="noopener noreferrer" aria-label="Apricotz on TikTok">TikTok</a></li><li><a href="mailto:social@ironvei-game.online?subject=Ironveil%20press%20and%20social">Press and social</a></li></ul></div></nav></div><div class="footer-bottom"><span>© 2026 Kayis Rahman · Ironveil is in development.</span><span>In development &middot; not yet released</span></div></div></footer>
 </body>
 </html>

@@ -11,10 +11,12 @@ const DIST = path.join(ROOT, 'dist');
 const SITE_URL = normalizeSiteUrl(process.env.SITE_URL || 'https://ironvei-game.online/');
 const RESPONSIVE_WIDTHS = [640, 1280, 1920, 2560, 3840];
 const IMAGE_BUDGET = 500 * 1024;
+// Generic deity wording: public copy must not carry deity names until they are
+// cleared for public use (captain decision, trademark check pending).
 const DISPLAY_NAMES = {
-  scout: 'Sunoracle',
-  storm: 'Stormwarden',
-  trickster: 'Slyfox',
+  scout: 'the scouting god',
+  storm: 'the storm god',
+  trickster: 'the trickster god',
 };
 
 function normalizeSiteUrl(value) {
@@ -80,7 +82,7 @@ async function makeResponsiveImages() {
     while ((match = picture.exec(html))) {
       const sourceRef = match[1].match(/\bdata-image="([^"]+)"/i)?.[1];
       if (!sourceRef) throw new Error(`${page}: <picture> is missing data-image`);
-      const sourcePath = path.posix.normalize(sourceRef.replace(/^\.\//, ''));
+      const sourcePath = resolveRepoPath(page, sourceRef);
       sources.set(sourcePath, true);
     }
     picture.lastIndex = 0;
@@ -93,8 +95,12 @@ async function makeResponsiveImages() {
     if (!metadata.width || !metadata.height) throw new Error(`Cannot inspect image dimensions: ${sourcePath}`);
     const base = path.basename(sourcePath, path.extname(sourcePath)).replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
     const candidates = [];
-    const isStory = /^assets\/source\/story\/\d+\.webp$/.test(sourcePath);
-    for (const width of RESPONSIVE_WIDTHS) {
+    const isStory = /^assets\/source\/story\/\d+\.png$/.test(sourcePath);
+    // Variants never upscale past the source width; the checker validates the
+    // capped set against the data-source-width attribute written by rewritePicture.
+    const widths = RESPONSIVE_WIDTHS.filter((width) => width <= metadata.width);
+    if (!widths.length) widths.push(metadata.width);
+    for (const width of widths) {
       if (candidates.some((item) => item.width === width)) continue;
       const makeImage = () => {
         let image = sharp(fullSource).rotate().resize({ width, kernel: 'lanczos3' });
@@ -113,14 +119,14 @@ async function makeResponsiveImages() {
       candidates.push({ width, avif, webp });
     }
     const fallback = candidates.find((item) => item.width >= 768) || candidates.at(-1);
-    generated.set(sourcePath, { candidates, fallback });
+    generated.set(sourcePath, { candidates, fallback, sourceWidth: metadata.width });
   }
   return generated;
 }
 
 async function sourcePages() {
   const pages = ['index.html', '404.html'];
-  for (const dir of ['how-to-play', 'release', 'demo', 'privacy', 'support']) pages.push(`${dir}/index.html`);
+  for (const dir of ['how-to-play', 'release', 'demo', 'privacy', 'support', 'press']) pages.push(`${dir}/index.html`);
   return pages;
 }
 
@@ -146,10 +152,24 @@ async function buildStaticAssets(responsive) {
   mappings.set('assets/brand/favicon.ico', 'favicon.ico');
   mappings.set('favicon.ico', 'favicon.ico');
   const shareSource = path.join(ROOT, 'assets/source/hero/snowy-island-campfire.webp');
-  const shareBytes = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 70, mozjpeg: true }).toBuffer();
+  const shareBase = await sharp(shareSource).resize({ width: 1200, height: 630, fit: 'cover', position: 'centre' }).jpeg({ quality: 70, mozjpeg: true }).toBuffer();
+  const shareWordmark = await sharp(await readFile(path.join(ROOT, 'assets/source/brand/wordmark-dark.svg'))).resize({ width: 640 }).png().toBuffer();
+  const shareBytes = await sharp(shareBase).composite([{ input: shareWordmark, gravity: 'centre' }]).jpeg({ quality: 70, mozjpeg: true }).toBuffer();
   await verifyMetadataStripped(shareBytes, 'social share image');
   const share = await writeHashedBytes('assets/brand', 'share', 'jpg', shareBytes);
   mappings.set('assets/brand/share.png', share.path);
+
+  const videoBytes = await readFile(path.join(ROOT, 'assets/source/video/forge-picker.mp4'));
+  const video = await writeHashedBytes('assets/media', 'forge-picker', 'mp4', videoBytes);
+  mappings.set('assets/source/video/forge-picker.mp4', video.path);
+
+  const downloadsDir = path.join(ROOT, 'assets/downloads');
+  for (const name of await readdir(downloadsDir)) {
+    const bytes = await readFile(path.join(downloadsDir, name));
+    const target = path.join(DIST, 'assets/downloads', name);
+    await ensureParent(target);
+    await writeFile(target, bytes);
+  }
 
   for (const [sourcePath, record] of responsive) mappings.set(sourcePath, record.fallback.webp.path);
   return { mappings, share: share.path };
@@ -160,7 +180,7 @@ function rewritePicture(markup, pagePath, responsive) {
   return markup.replace(picturePattern, (whole, attrs, inner) => {
     const sourcePath = attrs.match(/\bdata-image="([^"]+)"/i)?.[1];
     if (!sourcePath) throw new Error(`${pagePath}: picture without a source asset`);
-    const normalized = path.posix.normalize(sourcePath.replace(/^\.\//, ''));
+    const normalized = resolveRepoPath(pagePath, sourcePath);
     const output = responsive.get(normalized);
     if (!output) throw new Error(`${pagePath}: missing responsive image output for ${normalized}`);
     const sizes = attrs.match(/\bdata-sizes="([^"]+)"/i)?.[1] || '100vw';
@@ -183,7 +203,7 @@ function rewritePicture(markup, pagePath, responsive) {
     const pictureAttrs = attrs.replace(/\s+data-image="[^"]*"/i, '').replace(/\s+data-sizes="[^"]*"/i, '').replace(/\s+data-defer(?:="[^"]*")?/i, '');
     const noScriptImage = img.replace(/\sdata-(?:src|srcset|sizes)=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
     const noScriptFallback = deferred ? `<noscript>${replaceAttribute(noScriptImage, 'src', publicRelative(pagePath, fallback))}</noscript>` : '';
-    return `<picture${pictureAttrs}>${avif}${webp}${img}${noScriptFallback}</picture>`;
+    return `<picture${pictureAttrs} data-source-width="${output.sourceWidth}">${avif}${webp}${img}${noScriptFallback}</picture>`;
   });
 }
 
@@ -253,7 +273,7 @@ async function buildHtml(responsive, mappings, sharePath) {
 }
 
 async function buildDiscoveryFiles() {
-  const routes = ['', 'how-to-play/', 'release/', 'demo/', 'privacy/', 'support/'];
+  const routes = ['', 'how-to-play/', 'release/', 'demo/', 'privacy/', 'support/', 'press/'];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map((route) => `  <url><loc>${new URL(route, SITE_URL).href}</loc></url>`).join('\n')}\n</urlset>\n`;
   const robots = `User-agent: *\nAllow: /\nSitemap: ${new URL('sitemap.xml', SITE_URL).href}\n`;
   await writeFile(path.join(DIST, 'sitemap.xml'), sitemap);
