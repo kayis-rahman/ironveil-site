@@ -62,7 +62,7 @@ main { min-height: 65vh; }
 .button-quiet { background: #11152255; color: var(--ice); box-shadow: inset 0 0 0 1px rgba(231,232,228,.22); }
 .button-quiet:hover { background: #111522; color: var(--ice); }
 .button-outline { background: transparent; color: var(--ice); box-shadow: inset 0 0 0 1px rgba(231,232,228,.22); }
-.scroll-cue { position: absolute; z-index: 3; bottom: 28px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #ffffff70; border-radius: 50%; color: var(--ice); font-size: 1.1rem; text-decoration: none; transition: transform .2s ease, border-color .2s ease; }
+.scroll-cue { position: absolute; z-index: 3; bottom: 28px; left: 50%; transform: translateX(-50%); width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #ffffff70; border-radius: 50%; color: var(--ice); font-size: 1.1rem; text-decoration: none; transition: transform .2s ease, border-color .2s ease; }
 .scroll-cue:hover { transform: translate(-50%, -3px); border-color: var(--gold); }
 
 .section { padding-block: clamp(64px, 9vw, 112px); }
@@ -196,7 +196,7 @@ html[data-theme="light"] .press-logo-card figcaption { color: #c5c5ca; }
   .lead { max-width: 520px; }
   .scroll-cue { bottom: 18px; }
   .wrap { padding-inline: 22px; }
-  .story-grid, .gods-grid, .stage-grid, .media-grid, .island-grid { grid-template-columns: 1fr; }
+  .story-grid, .gods-grid, .stage-grid, .media-grid, .island-grid, .intro-grid { grid-template-columns: 1fr; }
   .story-card { padding: 10px; }
   .story-card img { aspect-ratio: 16 / 9; }
   .god-card { min-height: 0; }
