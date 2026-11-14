@@ -12,6 +12,7 @@ function startPage(savedChoice, footerNavCount = 1) {
   }));
   const listeners = {};
   const bannerListeners = {};
+  const bodyClasses = new Set();
   const privacyLink = { href: 'https://example.test/ironveil-site/privacy/' };
   const document = {
     title: 'Ironveil',
@@ -19,7 +20,16 @@ function startPage(savedChoice, footerNavCount = 1) {
     currentScript: { src: 'https://example.test/ironveil-site/assets/js/site-a1b2c3d4.js' },
     documentElement: { classList: { add() {} } },
     head: { append(element) { appended.push(element); } },
-    body: { append(element) { appended.push(element); } },
+    body: {
+      append(element) { appended.push(element); },
+      classList: {
+        toggle(name, force) {
+          const on = force === undefined ? !bodyClasses.has(name) : Boolean(force);
+          if (on) bodyClasses.add(name); else bodyClasses.delete(name);
+          return on;
+        },
+      },
+    },
     createElement(tagName) {
       return {
         tagName,
@@ -62,6 +72,7 @@ function startPage(savedChoice, footerNavCount = 1) {
     appended,
     window,
     banner: appended.find((item) => item.tagName === 'section'),
+    bodyClasses,
     privacyLink,
     footerNavs,
     clickConsent(value) {
@@ -74,6 +85,7 @@ function startPage(savedChoice, footerNavCount = 1) {
 
 const undecided = startPage(null);
 assert.equal(undecided.banner.hidden, false, 'new visitors should see the consent prompt');
+assert.ok(undecided.bodyClasses.has('consent-banner'), 'a visible banner marks the body so pages can clear its overlay');
 assert.ok(undecided.banner.innerHTML.includes(`href="${undecided.privacyLink.href}"`), 'the banner reuses the footer privacy destination under a repository subpath');
 
 for (const footerNavCount of [1, 1, 1, 1, 1, 1, 2]) {
@@ -88,6 +100,7 @@ for (const footerNavCount of [1, 1, 1, 1, 1, 1, 2]) {
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'no GA script request is made before consent');
 undecided.clickConsent('rejected');
 assert.equal(undecided.appended.some((item) => item.tagName === 'script'), false, 'rejecting analytics makes no GA script request');
+assert.equal(undecided.bodyClasses.has('consent-banner'), false, 'a dismissed banner clears the overlay mark');
 
 const accepted = startPage(null);
 accepted.clickConsent('accepted');
@@ -108,6 +121,7 @@ assert.ok(remembered.appended.some((item) => item.tagName === 'script'), 'a prev
 
 const rejectedBefore = startPage('rejected');
 assert.equal(rejectedBefore.banner.hidden, true, 'a previously rejected choice keeps the prompt hidden');
+assert.equal(rejectedBefore.bodyClasses.has('consent-banner'), false, 'a hidden banner leaves no overlay mark');
 assert.equal(rejectedBefore.appended.some((item) => item.tagName === 'script'), false, 'a previously rejected choice makes no GA script request');
 
 console.log('Analytics consent behavior passed.');

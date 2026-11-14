@@ -20,6 +20,7 @@ PAGES = [
     "demo/index.html",
     "privacy/index.html",
     "support/index.html",
+    "press/index.html",
 ]
 PAGE_BUDGET = 800 * 1024
 IMAGE_BUDGET = 500 * 1024
@@ -89,7 +90,13 @@ class PageParser(html.parser.HTMLParser):
         if tag == "script" and values.get("src"):
             self.scripts.append(values["src"] or "")
         if tag == "picture":
-            self.picture_stack.append({"formats": set(), "candidates": [], "widths": set(), "initial_load": False})
+            self.picture_stack.append({
+                "formats": set(),
+                "candidates": [],
+                "widths": set(),
+                "initial_load": False,
+                "source_width": values.get("data-source-width"),
+            })
         if tag == "source":
             if self.picture_stack:
                 record = self.picture_stack[-1]
@@ -144,7 +151,7 @@ class PageParser(html.parser.HTMLParser):
             if "image/avif" not in formats or "image/webp" not in formats:
                 error("Every picture must provide both AVIF and WebP sources")
             candidates = record["candidates"]
-            self.picture_widths.append(record["widths"])
+            self.picture_widths.append((record["widths"], record.get("source_width")))
             if candidates and record.get("initial_load"):
                 highest_width = max(width for _, width in candidates)
                 self.picture_costs.append([(url, width) for url, width in candidates if width == highest_width])
@@ -229,9 +236,14 @@ def main() -> int:
             error(f"Cannot parse {relative}: {exc}")
             continue
         link_kinds = {kind for _, kind in parser.links}
-        for widths in parser.picture_widths:
-            if widths != RESPONSIVE_WIDTHS:
-                error(f"Responsive picture must provide widths {sorted(RESPONSIVE_WIDTHS)}, found {sorted(widths)}: {relative}")
+        for widths, source_width in parser.picture_widths:
+            try:
+                source_width = int(source_width) if source_width else 0
+            except (TypeError, ValueError):
+                source_width = 0
+            expected = {w for w in RESPONSIVE_WIDTHS if w <= source_width} or {source_width}
+            if source_width <= 0 or widths != expected:
+                error(f"Responsive picture must provide the source-capped widths of {source_width}px {sorted(expected)}, found {sorted(widths)}: {relative}")
         for kind in {"icon", "apple-touch-icon"}:
             if kind not in link_kinds:
                 error(f"Missing {kind} link in {relative}")
@@ -310,8 +322,8 @@ def main() -> int:
     try:
         tree = ET.parse(DIST / "sitemap.xml")
         locations = [node.text or "" for node in tree.findall(".//{*}loc")]
-        if len(locations) != 6 or any(not location.startswith(SITE_URL) for location in locations):
-            error("sitemap.xml must list the six routes under SITE_URL")
+        if len(locations) != 7 or any(not location.startswith(SITE_URL) for location in locations):
+            error("sitemap.xml must list the seven routes under SITE_URL")
     except (ET.ParseError, OSError) as exc:
         error(f"Invalid sitemap.xml: {exc}")
 
@@ -341,7 +353,7 @@ def main() -> int:
         for item in ERRORS:
             print(f"- {item}", file=sys.stderr)
         return 1
-    print(f"All checks passed: {len(PAGES)} pages, {total_site / 1024:.0f} KiB artifact, {all_video_bytes / 1024:.0f} KiB self-hosted video bytes (0 is the current production target).")
+    print(f"All checks passed: {len(PAGES)} pages, {total_site / 1024:.0f} KiB artifact, {all_video_bytes / 1024:.0f} KiB self-hosted video within the {MEDIA_BUDGET / 1024:.0f} KiB media budget.")
     return 0
 
 
