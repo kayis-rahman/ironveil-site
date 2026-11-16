@@ -1,2 +1,6 @@
 commands:
-  lint: gitleaks git --redact --no-banner --log-opts="origin/main..HEAD" .
+  # Scan only the commits this branch adds; fall back to the merge-base with main if origin/main is missing.
+  lint: |
+    base=origin/main
+    git rev-parse -q --verify "$base" >/dev/null || base=$(git merge-base main HEAD)
+    gitleaks git -v --redact --no-banner --log-opts="$base..HEAD" .
