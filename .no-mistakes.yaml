@@ -1,0 +1,2 @@
+commands:
+  lint: gitleaks git --redact --no-banner --log-opts="origin/main..HEAD" .
