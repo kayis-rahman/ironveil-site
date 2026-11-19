@@ -126,7 +126,7 @@ async function makeResponsiveImages() {
 
 async function sourcePages() {
   const pages = ['index.html', '404.html'];
-  for (const dir of ['how-to-play', 'release', 'demo', 'privacy', 'support', 'press']) pages.push(`${dir}/index.html`);
+  for (const dir of ['how-to-play', 'release', 'demo', 'privacy', 'support', 'press', 'pebble-path/privacy']) pages.push(`${dir}/index.html`);
   return pages;
 }
 
@@ -273,7 +273,7 @@ async function buildHtml(responsive, mappings, sharePath) {
 }
 
 async function buildDiscoveryFiles() {
-  const routes = ['', 'how-to-play/', 'release/', 'demo/', 'privacy/', 'support/', 'press/'];
+  const routes = ['', 'how-to-play/', 'release/', 'demo/', 'privacy/', 'support/', 'press/', 'pebble-path/privacy/'];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map((route) => `  <url><loc>${new URL(route, SITE_URL).href}</loc></url>`).join('\n')}\n</urlset>\n`;
   const robots = `User-agent: *\nAllow: /\nSitemap: ${new URL('sitemap.xml', SITE_URL).href}\n`;
   await writeFile(path.join(DIST, 'sitemap.xml'), sitemap);

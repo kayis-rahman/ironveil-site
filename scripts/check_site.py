@@ -21,6 +21,7 @@ PAGES = [
     "privacy/index.html",
     "support/index.html",
     "press/index.html",
+    "pebble-path/privacy/index.html",
 ]
 PAGE_BUDGET = 800 * 1024
 IMAGE_BUDGET = 500 * 1024
@@ -322,8 +323,8 @@ def main() -> int:
     try:
         tree = ET.parse(DIST / "sitemap.xml")
         locations = [node.text or "" for node in tree.findall(".//{*}loc")]
-        if len(locations) != 7 or any(not location.startswith(SITE_URL) for location in locations):
-            error("sitemap.xml must list the seven routes under SITE_URL")
+        if len(locations) != 8 or any(not location.startswith(SITE_URL) for location in locations):
+            error("sitemap.xml must list the eight routes under SITE_URL")
     except (ET.ParseError, OSError) as exc:
         error(f"Invalid sitemap.xml: {exc}")
 
